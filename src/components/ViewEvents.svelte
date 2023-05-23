@@ -1,0 +1,3 @@
+<section>
+    View Events
+</section>

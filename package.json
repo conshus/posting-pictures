@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "posting-pictures",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/netlify": "^2.2.3",
     "@astrojs/svelte": "^2.2.0",
+    "@octokit/core": "^4.2.1",
     "astro": "^2.5.4",
     "svelte": "^3.59.1"
   }
