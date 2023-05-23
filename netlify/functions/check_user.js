@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 // https://www.npmjs.com/package/node-fetch
-const { PAT } = process.env;
+const { NETLIFY_PAT } = process.env;
 
 exports.handler = async function (event, context) {
     const { identity, user } = context.clientContext;
@@ -14,7 +14,7 @@ exports.handler = async function (event, context) {
                 'Content-Type': 'application/json',
                 // "User-Agent": "MyApp (YOUR_NAME@EXAMPLE.COM)",
                 // 'Authorization': 'Bearer ' + "QX27v2jCdNZlAamPQaru1u0JjDF440uF-EgWUlnlBlA"
-                'Authorization': 'Bearer ' + PAT
+                'Authorization': 'Bearer ' + NETLIFY_PAT
                 // 'Authorization': 'Bearer ' + "Zr20wX4I6jleYD61COTHLvZWdCfjFxQy8-NyVTnIFBk"
             // 'Content-Type': 'application/x-www-form-urlencoded',
             },

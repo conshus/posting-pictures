@@ -1,5 +1,5 @@
 <script>
-    import { user, siteURL, settings } from '../stores.js';
+    import { user, siteURL, settings, events } from '../stores.js';
     import UploadWidget from './UploadWidget.svelte';
     let datetime;
     let location;

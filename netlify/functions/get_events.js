@@ -18,9 +18,6 @@ const octokit = new Octokit({ auth: GITHUB_PAT });
 exports.handler = async (event, context) => {
 
     const { identity, user } = context.clientContext;
-    const eventSlug = event.queryStringParameters && event.queryStringParameters.slug
-
-    console.log("eventSlug: ", eventSlug);
 
     // console.log("process.env: ", process.env);
     // const returnValue = user.email || "nothing";
@@ -61,7 +58,7 @@ exports.handler = async (event, context) => {
                 'Content-Type': 'application/json',
                 // "User-Agent": "MyApp (YOUR_NAME@EXAMPLE.COM)",
                 // 'Authorization': 'Bearer ' + "QX27v2jCdNZlAamPQaru1u0JjDF440uF-EgWUlnlBlA"
-                'Authorization': 'Bearer ' + PAT
+                'Authorization': 'Bearer ' + NETLIFY_PAT
                 // 'Authorization': 'Bearer ' + "Zr20wX4I6jleYD61COTHLvZWdCfjFxQy8-NyVTnIFBk"
             // 'Content-Type': 'application/x-www-form-urlencoded',
             },
@@ -86,19 +83,18 @@ exports.handler = async (event, context) => {
 
             // console.log("base64newSettings: ", base64newSettings);
 
-            console.log("get event file");
+            console.log("get settings file");
             const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
                 owner: data.slug,
                 repo: githubRepo,
-                path: `${eventSlug}.json`,
+                path: 'post-pics-events.json',
                 headers: {
                   'X-GitHub-Api-Version': '2022-11-28'
                 }
             });
             // console.log("originalFile: ",originalFile);
 
-            const eventContent = Buffer.from(originalFile.data.content, "base64").toString();
-            console.log("eventContent: ",eventContent);
+            const eventsContent = Buffer.from(originalFile.data.content, "base64").toString();
             // console.log("get sha");
             // const originalFileSHA = originalFile.data.sha;
 
@@ -126,7 +122,7 @@ exports.handler = async (event, context) => {
                     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                     'Access-Control-Allow-Methods': '*', 
                 },
-                body: eventContent ? eventContent :  JSON.stringify([]),
+                body: eventsContent,
             };    
         // } else {
         //     return {

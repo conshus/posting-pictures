@@ -1,22 +1,5 @@
 ---
 
-export interface Props {
-	title: string;
-}
-// import { NetlifyAPI } from 'netlify'
-
-// const client = new NetlifyAPI("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQ3OTQ1MjMsInN1YiI6IjcyNzQ2ZTU2LWVmYmMtNDNhMi1hOTRiLWE2YmY5MmIwMTIyZSIsImVtYWlsIjoiaGV5QGR3YW5lLmlvIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwifSwidXNlcl9tZXRhZGF0YSI6e319.QX27v2jCdNZlAamPQaru1u0JjDF440uF-EgWUlnlBlA");
-// try {
-// const sites = await client.getEnvVars({
-//     accountId: 'lifelongdev'
-//   })
-
-// } catch(error) {
-// 	console.log(error)
-// }
-// console.log("client: ",client);
-const { title } = Astro.props;
-let userData;
 ---
 
 <!DOCTYPE html>
@@ -24,148 +7,13 @@ let userData;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Admin</title>
 		<script is:inline type="text/javascript" src='https://identity.netlify.com/v1/netlify-identity-widget.js'></script>
 		<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript" async></script>
-		<!-- <script>
-			// Bind to events
-			// netlifyIdentity.on("init", user => console.log("init: ",user));
-			// netlifyIdentity.on("login", user => console.log("login: ",user));
-			netlifyIdentity.on("logout", () => console.log("Logged out"));
-			netlifyIdentity.on("error", (err : Object) => console.error("Logged out: ", err));
-			netlifyIdentity.on("open", () => console.log("Widget opened"));
-			netlifyIdentity.on("close", () => console.log("Widget closed"));
-		</script>
-		<script>
-			function changeLocale(locale) {
-				netlifyIdentity.setLocale(locale)
-			}
-		</script> -->
-		<script type="module">
-			// import { NetlifyAPI } from '../../node_modules/netlify'
-
-
-			let userData;
-			const postEnvBtn = document.querySelector('#postEnvBtn');
-			const getEnvBtn = document.querySelector('#getEnvBtn');
-			const checkUserBtn = document.querySelector('#checkUserBtn');
-
-			// netlifyIdentity.on("init", user => {
-			// 	userData = user;
-			// 	console.log("init: ",user)
-			// });
-			// netlifyIdentity.on("login", user => {
-			// 	userData = user;
-			// 	console.log("login: ",user)
-			// });
-
-			async function validateJWT(){
-				console.log("userData.token.expires_at: ", userData.token.expires_at);
-				console.log("Date.now(): ", Date.now());
-				if ( Date.now() >= userData.token.expires_at ){
-					console.log("JWT expired");
-					// Refresh the JWT
-					console.log("refresh JWT");
-					try {
-						const response = await userData.jwt();
-						console.log("response: ", response);
-					} catch(error) {
-						console.log("refresh error: ", error);
-					}
-					// set gotrue.user in localStorage
-					return;
-				} else {
-					console.log("JWT is good");
-					return;
-				}
-			}
-
-			// Example GET method implementation:
-			async function getData(url = '', data = {}) {
-				// check if JWT is valid
-				await validateJWT();
-
-				// Default options are marked with *
-				const response = await fetch(url, {
-					method: 'GET', // *GET, POST, PUT, DELETE, etc.
-					// mode: 'cors', // no-cors, *cors, same-origin
-					// cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-					// credentials: 'same-origin', // include, *same-origin, omit
-					headers: {
-						'Content-Type': 'application/json',
-						// "User-Agent": "MyApp (YOUR_NAME@EXAMPLE.COM)",
-						// 'Authorization': 'Bearer ' + "QX27v2jCdNZlAamPQaru1u0JjDF440uF-EgWUlnlBlA"
-						'Authorization': 'Bearer ' + userData.token.access_token
-						// 'Authorization': 'Bearer ' + "Zr20wX4I6jleYD61COTHLvZWdCfjFxQy8-NyVTnIFBk"
-					// 'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					// redirect: 'follow', // manual, *follow, error
-					// referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-					// body: JSON.stringify(dataToSend) // body data type must match "Content-Type" header
-				});
-				return response.json(); // parses JSON response into native JavaScript objects
-			}
-
-
-			// Example POST method implementation:
-			async function postData(url = '', data = {}) {
-				const dataToSend = [
-					{
-						"key": "TEST_KEY",
-						"values": [{
-							"id": "TEST_ID",
-							"value": "test value",
-							"context": "all"
-						}]
-					}
-				]
-				// Default options are marked with *
-				const response = await fetch(url, {
-					method: 'POST', // *GET, POST, PUT, DELETE, etc.
-					// mode: 'cors', // no-cors, *cors, same-origin
-					// cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-					// credentials: 'same-origin', // include, *same-origin, omit
-					headers: {
-						'Content-Type': 'application/json',
-						// "User-Agent": "MyApp (YOUR_NAME@EXAMPLE.COM)",
-						// 'Authorization': 'Bearer ' + "QX27v2jCdNZlAamPQaru1u0JjDF440uF-EgWUlnlBlA"
-						'Authorization': 'Bearer ' + "Zr20wX4I6jleYD61COTHLvZWdCfjFxQy8-NyVTnIFBk"
-					// 'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					// redirect: 'follow', // manual, *follow, error
-					// referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-					body: JSON.stringify(dataToSend) // body data type must match "Content-Type" header
-				});
-				return response.json(); // parses JSON response into native JavaScript objects
-			}
-		
-			postEnvBtn.addEventListener("click", () => {
-				postData('https://api.netlify.com/api/v1/accounts/conshus/env?site_id=94bccf3c-8240-4cd4-8fe6-ed6cb68ced99', { answer: 42 })
-				.then((data) => {
-					console.log(data); // JSON data parsed by `data.json()` call
-				});
-			});
-			getEnvBtn.addEventListener("click", () => {
-				getData('https://api.netlify.com/api/v1/user', { answer: 42 })
-				.then((data) => {
-					console.log(data); // JSON data parsed by `data.json()` call
-				});
-			});
-			checkUserBtn.addEventListener("click", () => {
-				getData('https://marvelous-otter-a2b882.netlify.app/.netlify/functions/checkuser', { answer: 42 })
-				.then((data) => {
-					console.log(data); // JSON data parsed by `data.json()` call
-				});
-			});
-		</script>
 	</head>
 	<body>
-		<!-- <div data-netlify-identity-button></div> -->
-		<button id="postEnvBtn">post</button>
-		<button id="getEnvBtn">get</button>
-		<button id="checkUserBtn">check user</button>
 		<slot />
 	</body>
 </html>
