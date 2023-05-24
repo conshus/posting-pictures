@@ -18,12 +18,10 @@
     let newLocationDetails;
     let locationChoice = 'existing';
     let newLocationChoice = 'search';
-    let eventForm;
 
     $: slug = title && title.toLowerCase().replaceAll(' ','-').replaceAll("'",'');
     $: locationSlug = locationName && locationName.toLowerCase().replaceAll(' ','-').replaceAll(',','');
     $: slugDuplicate = $events?.find(event => event.slug === slug);
-    // $: slugUnique = false;
     $: allowSubmit = title && locationName && lat && lon && datetime && !slugDuplicate;
 
     async function getLocation() {
@@ -34,7 +32,6 @@
             const data = await response.json();
             console.log("data: ", data);
             // just take the first entry
-            // location = data.display_name;
             lat = data[0].lat;
             lon = data[0].lon;
             minLat = data[0].boundingbox[0];
@@ -73,10 +70,6 @@
         }
     }
     
-    // function addEvent() {
-    //     console.log("add event");
-    // }
-
     // Example POST method implementation:
     async function postData(url = '', data = {}) {
         // Default options are marked with *
@@ -158,7 +151,6 @@
             const addEventResponse = await postData(`/.netlify/functions/add_event`, eventToAdd.slug);
             console.log("addEventResponse: ",addEventResponse);
             status = "saving to events list";
-            // const saveResponse = await postData(`${$siteURL}/.netlify/functions/savesettings`, $settings);
             const saveToEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
             status = "events saved successfully"
             console.log("saveToEventsResponse: ", saveToEventsResponse);
@@ -167,13 +159,6 @@
         } catch (error) {
             status = error;
         }
-    }
-
-    async function getSettings() {
-        console.log("get settings");
-        const getResponse = await fetch(`/.netlify/functions/getsettings`);
-        const settings = await getResponse.json();
-        console.log("settings: ", settings);
     }
 
     function handleLocationSelectChange() {
@@ -251,38 +236,8 @@
 
     </fieldset>
 
-    <div></div>
-    <!-- <label for="location">Location:</label> -->
-    <!-- <br/>                 -->
-    <!-- <input bind:value={locationName} id="location" required> -->
-    <br/>
-    
-    <br/>
-    <!-- <br/><br/>
-    Coordinates:<br/>
-    <label for="lat">Lat: </label>
-    <input bind:value={lat} id="lat" required>
-    <br/>
-    <label for="lon">Lon: </label>
-    <input bind:value={lon} id="lon" required>
-    <br/>                
-    <label for="minLat">min Lat: </label>
-    <input bind:value={minLat} id="minLat" required>
-    <br/>
-    <label for="maxLat">max Lat: </label>
-    <input bind:value={maxLat} id="maxLat" required>
-    <br/>
-    <label for="minLon">min Lon: </label>
-    <input bind:value={minLon} id="minLon" required>
-    <br/>
-    <label for="maxLon">max Lon: </label>
-    <input bind:value={maxLon} id="maxLon" required>
-    <br/><br/> -->
+    <br/><br/>
     <div id="status">{status}</div>
     <br/>
     <button on:click={addEvent} disabled={!allowSubmit} name="add">Add Event</button>
-    <!-- <button on:click={clearForm} name="rest">Reset</button> -->
-    <!-- <button on:click={saveSettings} disabled={!allowSubmit} name="save">Save Settings</button> -->
-    <!-- <button on:click={getSettings} name="get">Get Settings</button> -->
-    <!-- <br>{$siteURL} -->
 </section>

@@ -31,8 +31,7 @@
                 }catch(error){
                     console.log("error getting events and/or locations: ", error);
                 }
-            }
-            
+            }            
         }
     });
 
@@ -74,10 +73,7 @@
         console.log("init $user: ", $user);
         console.log("init netlifyIdentity.currentUser : ", netlifyIdentity.currentUser());
         console.log("init ls user: ", JSON.parse(localStorage.getItem('gotrue.user')));
-        // if (!$user) {
         if (netlifyUser) {
-            // loggedInUser = netlifyUser;
-            // $user = netlifyUser;
             user.register(netlifyUser);
             console.log("got user on init.",$user);
             loggedIn = true;
@@ -89,10 +85,6 @@
         }
     });
     netlifyIdentity.on("login", async(netlifyUser) => {
-        console.log("login: ", netlifyUser);
-        // loggedInUser = netlifyUser;
-        // $user = netlifyUser;
-        // user.register(netlifyUser);
         if (!loggedIn && !$user){
             user.register(netlifyUser);
             console.log("user just logged in");
@@ -132,11 +124,13 @@
 </script>
 
 <section>
-    <!-- <div data-netlify-identity-button></div> -->
-    <!-- {#if loggedInUser && loggedIn && isAuth} -->
     {#if $user && loggedIn && isAuth}
         <button on:click={logout} class="logout">logout</button>
-        <Dashboard />
+        {#if $events && $locations}
+            <Dashboard />
+        {:else}
+            <p>loading...</p>
+        {/if}
     {:else if $user && loggedIn}
         <button on:click={logout} class="logout">logout</button>
         not authorized!
@@ -145,7 +139,6 @@
             <button on:click={login} class="login">login</button>
         </div>
     {/if}
-
 </section>
 
 <style>

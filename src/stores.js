@@ -20,6 +20,6 @@ function createUser() {
 }
 export const user = createUser();
 export const siteURL = writable("");
-export const settings = writable({});
-export const events = writable({});
-export const locations = writable({});
+export const settings = writable(undefined);
+export const events = writable(undefined);
+export const locations = writable(undefined);
