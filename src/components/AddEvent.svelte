@@ -143,6 +143,7 @@
         if(!duplicateLocation){
             // save to locations file
             $locations = [...$locations, locationToAdd];
+            console.log("not a duplicate: ", $locations);
             try {
                 const saveToLocationsResponse = await postData(`/.netlify/functions/save_to_locations`, $locations);
                 status = "locations saved successfully"
