@@ -61,7 +61,7 @@
         <div>No events yet. Please add one.</div>
     {:else}
         <select bind:value={selectedEvent} on:change="{handleEventSelectChange}">
-            <option value={undefined} selected={!selectedEvent}>select a event</option>
+            <option value={undefined} selected={!selectedEvent}>select an event</option>
             {#each $events as event}
                 <option value={event}>
                     {event.title}
@@ -70,6 +70,7 @@
         </select>
     {/if}
     {#if selectedEvent}
+        <br/>
         <label for="event">Event:</label>
         <br/>        
         <input bind:value={selectedEvent.title} id="title" required>
@@ -81,8 +82,10 @@
         <label for="datetime">Date and Time:</label>
         <br/>  
         <input type="datetime-local" bind:value={datetime} on:change={handleDateTimeChange} id="datetime" required>
-
-        <select bind:value={selectedLocation} on:change="{handleLocationSelectChange}">
+        <br/>
+        <label for="location">Location:</label>
+        <br/>        
+        <select id="location"  bind:value={selectedLocation} on:change="{handleLocationSelectChange}">
             {#each $locations as location}
                 <option value={location} selected={selectedEvent.locationSlug === location.slug}>
                     {location.name}
