@@ -1,13 +1,34 @@
 <script>
     import { user, siteURL, settings, events, locations } from '../stores.js';
     let selectedEvent;
+    let datetime;
+
+    // $: dateTimeValue = (new Date(selectedEvent.timeInMs)).toISOString().replace('Z','')
 
     function handleLocationSelectChange() {
         console.log("handleSelectChange: ", selectedEvent);
+        datetime = (new Date(selectedEvent.timeInMs)).toISOString().replace('Z','');
     }
 
     function handleDateTimeChange() {
         console.log("handleDateTimeChange");
+        const timezoneHr = Math.trunc(-(new Date().getTimezoneOffset() / 60));
+        const sign = timezoneHr < 0 ? "-" : "+";
+        const timezoneMin = new Date().getTimezoneOffset() % 60;
+        const timezoneString = `${sign}${
+        Math.abs(timezoneHr) < 10 ? "0" + Math.abs(timezoneHr) : Math.abs(timezoneHr)
+        }${timezoneMin === 0 ? "00" : Math.abs(timezoneMin)}`;
+        console.log("handleDateTimeChange: ", datetime)
+        console.log(`${datetime} GMT${timezoneString}`);
+        const newDate = new Date(`${datetime}${timezoneString}`);
+        timeInMs = Date.parse(newDate);
+        console.log({ timeInMs });
+        console.log(new Date(timeInMs).toLocaleString());
+        console.log("datetimeSplit: ", datetime.split('T')[0].split('-'));
+        const datetimeSplit = datetime.split('T')[0].split('-')
+        console.log("yearMonth: ", `${datetimeSplit[0]}-${datetimeSplit[1]}`);
+        yearMonth = `${datetimeSplit[0]}-${datetimeSplit[1]}`;
+
     }
 
     function updateEvent(){
@@ -45,9 +66,9 @@
         <input bind:value={selectedEvent.slug} id="slug" disabled>
         <br/><br/>
         <label for="datetime">Date and Time:</label>
-        {new Date(selectedEvent.timeInMs)}
+        {(new Date(selectedEvent.timeInMs)).toISOString().replace('Z','')}
         <br/>  
-        <input type="datetime-local" bind:value={selectedEvent.timeInMs} on:change={handleDateTimeChange} id="datetime" required>
+        <input type="datetime-local" bind:value={datetime} on:change={handleDateTimeChange} id="datetime" required>
 
         <button on:click={updateEvent} name="update-event">Update</button>
         <button on:click={removeEvent} name="remove-event">Remove from list</button>
