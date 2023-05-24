@@ -18,12 +18,13 @@
     let newLocationDetails;
     let locationChoice = 'existing';
     let newLocationChoice = 'search';
+    let eventForm;
 
     $: slug = title && title.toLowerCase().replaceAll(' ','-').replaceAll("'",'');
     $: locationSlug = locationName && locationName.toLowerCase().replaceAll(' ','-').replaceAll(',','');
-    $: slugUnique = $settings.events?.find(event => event.slug === slug);
+    $: slugDuplicate = $events?.find(event => event.slug === slug);
     // $: slugUnique = false;
-    $: allowSubmit = title && locationName && lat && lon && datetime && !slugUnique;
+    $: allowSubmit = title && locationName && lat && lon && datetime && !slugDuplicate;
 
     async function getLocation() {
         console.log("get Location", location);
@@ -135,7 +136,6 @@
             }
         };
 
-        // $events = $events ? [...$events, eventToAdd] : [eventToAdd];
         $events = [...$events, eventToAdd];
 
         // Check if location is new
@@ -153,7 +153,6 @@
             }
         }
         console.log("$events: ", $events);
-        // const saveResponse = await postData("https://marvelous-otter-a2b882.netlify.app/.netlify/functions/savesettings",dataToSend);
         try {
             status = "adding event";
             const addEventResponse = await postData(`/.netlify/functions/add_event`, eventToAdd.slug);
@@ -163,6 +162,8 @@
             const saveToEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
             status = "events saved successfully"
             console.log("saveToEventsResponse: ", saveToEventsResponse);
+            clearForm();
+
         } catch (error) {
             status = error;
         }
@@ -170,17 +171,40 @@
 
     async function getSettings() {
         console.log("get settings");
-        // const getResponse = await fetch("https://marvelous-otter-a2b882.netlify.app/.netlify/functions/getsettings");
-        // const getResponse = await fetch(`${$siteURL}/.netlify/functions/getsettings`);
         const getResponse = await fetch(`/.netlify/functions/getsettings`);
         const settings = await getResponse.json();
         console.log("settings: ", settings);
     }
 
+    function handleLocationSelectChange() {
+        locationSlug = selectedLocation.slug;
+        locationName = selectedLocation.name;
+        lat = selectedLocation.lat;
+        lon = selectedLocation.lon;
+        minLat = selectedLocation.boundary?.minLat;
+        minLon = selectedLocation.boundary?.minLon;
+        maxLat = selectedLocation.boundary?.maxLat;
+        maxLon = selectedLocation.boundary?.maxLon;
+    }
+
+    function clearForm() {
+        title = "";
+        slug = "";
+        datetime = "";
+        selectedLocation = undefined;
+        locationSlug = "";
+        locationName = "";
+        lat = "";
+        lon = "";
+        minLat = "";
+        minLon = "";
+        maxLat = "";
+        maxLon = "";
+    }
+    
 </script>
+
 <section>
-    <!-- {!slugUnique} -->
-    Add Event
     <label for="event">Event:</label>
     <br/>        
     <input bind:value={title} id="title" required>
@@ -188,6 +212,8 @@
     <label for="slug">Slug:</label>
     <br/>        
     <input bind:value={slug} id="slug" disabled required>
+    <br/>
+    {slugDuplicate ? "event name needs to be unique":""}
     <br/><br/>
     <label for="datetime">Date and Time:</label>
     <br/>  
@@ -200,7 +226,8 @@
             {#if $locations.length === 0}
                 <div>No locations yet.</div>
             {:else}
-                <select bind:value={selectedLocation} on:change="{() => locationSlug = selectedLocation.slug}">
+                <select bind:value={selectedLocation} on:change="{handleLocationSelectChange}">
+                    <option value={undefined} selected={!selectedLocation}>select a location</option>
                     {#each $locations as location}
                         <option value={location}>
                             {location.name}
@@ -231,7 +258,7 @@
     <br/>
     
     <br/>
-    <br/><br/>
+    <!-- <br/><br/>
     Coordinates:<br/>
     <label for="lat">Lat: </label>
     <input bind:value={lat} id="lat" required>
@@ -250,10 +277,11 @@
     <br/>
     <label for="maxLon">max Lon: </label>
     <input bind:value={maxLon} id="maxLon" required>
-    <br/><br/>
+    <br/><br/> -->
     <div id="status">{status}</div>
     <br/>
     <button on:click={addEvent} disabled={!allowSubmit} name="add">Add Event</button>
+    <!-- <button on:click={clearForm} name="rest">Reset</button> -->
     <!-- <button on:click={saveSettings} disabled={!allowSubmit} name="save">Save Settings</button> -->
     <!-- <button on:click={getSettings} name="get">Get Settings</button> -->
     <!-- <br>{$siteURL} -->
