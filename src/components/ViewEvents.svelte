@@ -21,13 +21,14 @@
         console.log("handleDateTimeChange: ", datetime)
         console.log(`${datetime} GMT${timezoneString}`);
         const newDate = new Date(`${datetime}${timezoneString}`);
-        timeInMs = Date.parse(newDate);
-        console.log({ timeInMs });
-        console.log(new Date(timeInMs).toLocaleString());
+        selectedEvent.timeInMs = Date.parse(newDate);
+        console.log(selectedEvent.timeInMs);
+        console.log(new Date(selectedEvent.timeInMs).toLocaleString());
         console.log("datetimeSplit: ", datetime.split('T')[0].split('-'));
         const datetimeSplit = datetime.split('T')[0].split('-')
         console.log("yearMonth: ", `${datetimeSplit[0]}-${datetimeSplit[1]}`);
-        yearMonth = `${datetimeSplit[0]}-${datetimeSplit[1]}`;
+        selectedEvent.yearMonth = `${datetimeSplit[0]}-${datetimeSplit[1]}`;
+        console.log("selectedEvent: ", selectedEvent);
 
     }
 
