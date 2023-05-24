@@ -29,7 +29,7 @@
         console.log("get Location", location);
         status = "getting coordinates..."
         if (locationName){
-            const response = await fetch(`https://nominatim.openstreetmap.org/search.php?q=${location}&format=jsonv2`);
+            const response = await fetch(`https://nominatim.openstreetmap.org/search.php?q=${locationName}&format=jsonv2`);
             const data = await response.json();
             console.log("data: ", data);
             // just take the first entry
