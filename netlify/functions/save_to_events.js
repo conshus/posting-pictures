@@ -23,7 +23,7 @@ exports.handler = async (event, context) => {
             method: 'get',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + PAT
+                'Authorization': 'Bearer ' + NETLIFY_PAT
             },
         });
         const siteData = await siteResponse.json();
