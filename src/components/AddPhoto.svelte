@@ -132,25 +132,68 @@
 
 </script>
 <section>
-    Select Event
-    <br/>
-    {#if $settings.events}
+    {#if $events.length > 0}
+        Select Event
+        <br/>
         <select bind:value={photoData}>
-            {#each $settings.events as event}
+            {#each $events as event}
                 <option value={event}>
                     {event.title}
                 </option>
             {/each}
         </select>
+        <br/><br/>
+        <label for="datetime">Date and Time:</label>
+        <br/>  
+        <input type="datetime-local" bind:value={datetime} on:change={handleDateTimeChange} id="datetime" required>
+        <br/>
+        <br/><br/>
+        <label for="caption">Title / Caption:</label>
+        <br/>  
+        <input type="text" bind:value={caption} id="caption" required>
+        <br/>
+        <br/><br/>
+        <label for="alt-text">Describe the photo:</label>
+        <br/>
+        <textarea id="alt-text" name="alt-text" bind:value={altText} placeholder="Will be used as alt text and for keywords."></textarea>
+        <br/><button on:click={saveAltText} name="save-alt-text">Save Alt Text</button>
+        <br/><br/>
+        Add People, Things, Places
+        <br/>
+        <label for="name">Name:</label>
+        <br/>                
+        <input bind:value={name} id="name" required>
+        <br/>
+        <label for="username">Username (optional):</label>
+        <br/>                
+        <input bind:value={username} id="username" placeholder="no @" required>
+        <br/>
+        <button on:click={addTag} name="add-tag">Add Tag</button>
+    
+        <fieldset>
+            <legend>Added Tags</legend>
+            {#each withTags as tag (tag.slug)}
+                <div>{tag.name} {tag.username}</div>
+            {/each}
+        </fieldset>
+    
+        <div id="status">{status}</div>
+        <br/>
+        <button on:click={() => uploadWidget.showUploadWidget()}  name="upload">Upload</button>
+        <UploadWidget photoData={photoData} photoTags={photoTagsNoDuplicates}  withMetadata={withMetadata} caption={caption} alt={altText} bind:this={uploadWidget} on:success={handleCloudinarySuccess} />
+        <!-- <button on:click={addEvent} disabled={!allowSubmit} name="add">Add</button>
+        <button on:click={saveSettings} disabled={!allowSubmit} name="save">Save Settings</button>
+        <button on:click={getSettings} name="get">Get Settings</button> -->
+    
     {:else}
-        loading events...
+        Please add an event
     {/if}
-    <br/><br/>
+    <!-- <br/><br/>
     {#if photoData}
         {photoData.location}
     {:else}
         select a location
-    {/if}
+    {/if} -->
     <!-- <br/><br/>
     <label for="location">Location:</label>
     <br/>                
@@ -158,46 +201,4 @@
     <br/>
     <button on:click={getLocation} name="get-location">Get Location</button><button on:click={findMyLocation} name="find-location">Find My Location</button> -->
 
-    <br/><br/>
-    <label for="datetime">Date and Time:</label>
-    <br/>  
-    <input type="datetime-local" bind:value={datetime} on:change={handleDateTimeChange} id="datetime" required>
-    <br/>
-    <br/><br/>
-    <label for="caption">Title / Caption:</label>
-    <br/>  
-    <input type="text" bind:value={caption} id="caption" required>
-    <br/>
-    <br/><br/>
-    <label for="alt-text">Describe the photo:</label>
-    <br/>
-    <textarea id="alt-text" name="alt-text" bind:value={altText} placeholder="Will be used as alt text and for keywords."></textarea>
-    <br/><button on:click={saveAltText} name="save-alt-text">Save Alt Text</button>
-    <br/><br/>
-    Add People, Things, Places
-    <br/>
-    <label for="name">Name:</label>
-    <br/>                
-    <input bind:value={name} id="name" required>
-    <br/>
-    <label for="username">Username (optional):</label>
-    <br/>                
-    <input bind:value={username} id="username" placeholder="no @" required>
-    <br/>
-    <button on:click={addTag} name="add-tag">Add Tag</button>
-
-    <fieldset>
-        <legend>Added Tags</legend>
-        {#each withTags as tag (tag.slug)}
-            <div>{tag.name} {tag.username}</div>
-        {/each}
-    </fieldset>
-
-    <div id="status">{status}</div>
-    <br/>
-    <button on:click={() => uploadWidget.showUploadWidget()}  name="upload">Upload</button>
-    <UploadWidget photoData={photoData} photoTags={photoTagsNoDuplicates}  withMetadata={withMetadata} caption={caption} alt={altText} bind:this={uploadWidget} on:success={handleCloudinarySuccess} />
-    <!-- <button on:click={addEvent} disabled={!allowSubmit} name="add">Add</button>
-    <button on:click={saveSettings} disabled={!allowSubmit} name="save">Save Settings</button>
-    <button on:click={getSettings} name="get">Get Settings</button> -->
 </section>

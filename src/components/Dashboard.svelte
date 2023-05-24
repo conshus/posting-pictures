@@ -10,7 +10,7 @@
 <main>
     Dashboard
     <a href="https://cloudinary.com/console/media_library/folders/home" target="_blank" rel="noreferrer">View Cloudinary console</a>
-    <br/><button on:click={() => mode = "photo"}>add photo</button> | <button on:click={() => mode = "event"}>add event</button> | <button on:click={() => mode = "events"}>view events</button> | <button on:click={() => mode = "photos"}>view photos</button>
+    <br/><button on:click={() => mode = "photo"}>add photo</button> | <button on:click={() => mode = "event"}>add event</button> | <button on:click={() => mode = "events"}>edit events</button> | <button on:click={() => mode = "photos"}>edit photos</button>
     {#if mode === "photo"}
         <AddPhoto />
     {:else if mode === "event"}

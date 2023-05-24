@@ -27,17 +27,17 @@ exports.handler = async (event, context) => {
     const siteData = await siteResponse.json();
 
     const githubRepo = siteData.build_settings.repo_path.split(`${data.slug}/`)[1];
-    console.log("get events file");
+    console.log("get locations file");
     const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
         owner: data.slug,
         repo: githubRepo,
-        path: 'post-pics-events.json',
+        path: 'post-pics-locations.json',
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         }
     });
 
-    const eventsContent = Buffer.from(originalFile.data.content, "base64").toString();
+    const locationsContent = Buffer.from(originalFile.data.content, "base64").toString();
 
     return {
         statusCode: 200,
@@ -46,6 +46,6 @@ exports.handler = async (event, context) => {
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Methods': '*', 
         },
-        body: eventsContent,
+        body: locationsContent,
     };     
 };

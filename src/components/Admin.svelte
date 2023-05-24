@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { user, siteURL, settings, events } from '../stores.js';
+    import { user, siteURL, settings, events, locations } from '../stores.js';
     import Dashboard from './Dashboard.svelte';
     let loggedIn = false;
     let isAuth = false;
@@ -20,13 +20,16 @@
             isAuth = authResponse.verified;
             if (isAuth){
                 // Get events
-                console.log("get events", $siteURL);
+                console.log("get events and locations", $siteURL);
                 try{
                     const eventsResponse = await fetch(`/.netlify/functions/get_events`);
                     $events = await eventsResponse.json();
                     console.log("events: ", $events);
+                    const locationsResponse = await fetch(`/.netlify/functions/get_locations`);
+                    $locations = await locationsResponse.json();
+                    console.log("locations: ", $locations);
                 }catch(error){
-                    console.log("error getting events: ", error);
+                    console.log("error getting events and/or locations: ", error);
                 }
             }
             
@@ -129,18 +132,37 @@
 </script>
 
 <section>
-    Admin {$siteURL}
-    <br/>
     <!-- <div data-netlify-identity-button></div> -->
     <!-- {#if loggedInUser && loggedIn && isAuth} -->
     {#if $user && loggedIn && isAuth}
-        <button on:click={logout}>logout</button>
+        <button on:click={logout} class="logout">logout</button>
         <Dashboard />
     {:else if $user && loggedIn}
-        <button on:click={logout}>logout</button>
+        <button on:click={logout} class="logout">logout</button>
         not authorized!
     {:else}
-        <button on:click={login}>login</button>
+        <div id="login-container">
+            <button on:click={login} class="login">login</button>
+        </div>
     {/if}
 
 </section>
+
+<style>
+    button {
+        cursor: pointer;
+    }
+    .logout {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+    #login-container {
+        position: absolute;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
