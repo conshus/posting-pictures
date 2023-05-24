@@ -1,5 +1,11 @@
 ---
 const { event } = Astro.params;
+let siteURL = Astro.url.origin;
+
+const response = await fetch(siteURL+"/.netlify/functions/get_event?slug="+event);
+const data = await response.json();
+console.log("data: ", data);
+
 ---
 
-<h1>{event}</h1>
+<h1>{event}: {data.length}</h1>

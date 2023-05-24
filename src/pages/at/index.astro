@@ -1,1 +1,38 @@
-<h1>Events!</h1>
+---
+let groupedEvents;
+let groupedKeys = [];
+let groupedValues = [];
+let siteURL = Astro.url.origin;
+
+function groupBy(objectArray, property) {
+  return objectArray.reduce((acc, obj) => {
+    const key = obj[property];
+    const curGroup = acc[key] ?? [];
+
+    return { ...acc, [key]: [...curGroup, obj] };
+  }, {});
+}
+
+const response = await fetch(siteURL+"/.netlify/functions/get_events")
+const data = await response.json();
+groupedEvents = groupBy(data, "group");
+console.log("groupedEvents: ", groupedEvents);
+console.log("Object.values(groupedEvents): ",Object.values(groupedEvents));
+console.log("Object.keys(groupedEvents): ",Object.keys(groupedEvents));
+groupedKeys = Object.keys(groupedEvents).sort();
+groupedValues = Object.values(groupedEvents).sort();
+
+
+---
+
+<ul>
+	{groupedKeys.map((keyLetter,index) => (
+		<h1>{keyLetter}</h1>
+		<ul>
+			{groupedValues[index].map((eventData) => (
+				<li><a href={Astro.url+"/"+eventData.slug}>{eventData.title}</a></li>
+			))}
+		</ul>
+	))}
+</ul>
+
