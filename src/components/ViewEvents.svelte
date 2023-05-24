@@ -45,7 +45,7 @@
         <input bind:value={selectedEvent.slug} id="slug" disabled>
         <br/><br/>
         <label for="datetime">Date and Time:</label>
-        <!-- {new Date(selectedEvent.timeInMs).toString()} -->
+        {new Date(selectedEvent.timeInMs)}
         <br/>  
         <input type="datetime-local" bind:value={selectedEvent.timeInMs} on:change={handleDateTimeChange} id="datetime" required>
 
