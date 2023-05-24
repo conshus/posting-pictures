@@ -34,6 +34,8 @@
 
     function updateEvent(){
         console.log("update event");
+        selectedEvent.group = selectedEvent.title.split('')[0].toUpperCase();
+        console.log("updateEvent selectedEvent: ", selectedEvent);
     }
 
     function removeEvent(){
