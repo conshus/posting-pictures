@@ -1,12 +1,13 @@
 <script>
     import { user, siteURL, settings, events, locations } from '../stores.js';
     let selectedEvent;
+    let selectedLocation;
     let datetime;
 
     // $: dateTimeValue = (new Date(selectedEvent.timeInMs)).toISOString().replace('Z','')
 
-    function handleLocationSelectChange() {
-        console.log("handleSelectChange: ", selectedEvent);
+    function handleEventSelectChange() {
+        console.log("handleEcentSelectChange: ", selectedEvent);
         datetime = (new Date(selectedEvent.timeInMs)).toISOString().replace('Z','');
     }
 
@@ -32,6 +33,15 @@
 
     }
 
+    function handleLocationSelectChange(){
+
+        selectedEvent.locationName = selectedLocation.name;
+        selectedEvent.locationSlug = selectedLocation.slug;
+
+        console.log("handleLocationSelectChange selectedEvent: ", selectedEvent);
+
+    }
+
     function updateEvent(){
         console.log("update event");
         selectedEvent.group = selectedEvent.title.split('')[0].toUpperCase();
@@ -50,7 +60,7 @@
     {#if $events.length === 0}
         <div>No events yet. Please add one.</div>
     {:else}
-        <select bind:value={selectedEvent} on:change="{handleLocationSelectChange}">
+        <select bind:value={selectedEvent} on:change="{handleEventSelectChange}">
             <option value={undefined} selected={!selectedEvent}>select a event</option>
             {#each $events as event}
                 <option value={event}>
@@ -69,13 +79,20 @@
         <input bind:value={selectedEvent.slug} id="slug" disabled>
         <br/><br/>
         <label for="datetime">Date and Time:</label>
-        {(new Date(selectedEvent.timeInMs)).toISOString().replace('Z','')}
         <br/>  
         <input type="datetime-local" bind:value={datetime} on:change={handleDateTimeChange} id="datetime" required>
 
+        <select bind:value={selectedLocation} on:change="{handleLocationSelectChange}">
+            {#each $locations as location}
+                <option value={location} selected={selectedEvent.locationSlug === location.slug}>
+                    {location.name}
+                </option>
+            {/each}
+        </select>
+
         <button on:click={updateEvent} name="update-event">Update</button>
         <button on:click={removeEvent} name="remove-event">Remove from list</button>
-        <p>** Removing an event does not delete it. It only removes from list.</p>
+        <p>** Removing an event does not delete it. It only removes from the list.</p>
     {:else}
         please select an event
     {/if}
