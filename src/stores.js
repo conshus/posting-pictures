@@ -23,3 +23,4 @@ export const siteURL = writable("");
 export const settings = writable(undefined);
 export const events = writable(undefined);
 export const locations = writable(undefined);
+export const latestPics = writable(undefined);

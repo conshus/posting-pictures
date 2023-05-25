@@ -16,59 +16,10 @@
     let photoTags = [];
     let uploadWidget;
     let status = "";
+    let url;
     $: allowSubmit = location && datetime;
     $: slug = name && name.toLowerCase().replaceAll(' ','-');
     $: photoTagsNoDuplicates = Array.from(new Set(photoTags));
-
-
-    // async function getLocation() {
-    //     console.log("get Location", location);
-    //     status = "getting coordinates..."
-    //     if (location){
-    //         const response = await fetch(`https://nominatim.openstreetmap.org/search.php?q=${location}&format=jsonv2`);
-    //         const data = await response.json();
-    //         console.log("data: ", data);
-    //         // just take the first entry
-    //         // location = data.display_name;
-    //         lat = data[0].lat;
-    //         lon = data[0].lon;
-    //         minLat = data[0].boundingbox[0];
-    //         maxLat = data[0].boundingbox[1];
-    //         minLon = data[0].boundingbox[2];
-    //         maxLon = data[0].boundingbox[3];
-
-    //         status= "got location data!";
-    //         photoData.location = location;
-    //     } else {
-    //         status = "enter a location";
-    //     }
-    // }
-    
-    // function findMyLocation() {
-    //     console.log("find my Location");
-    //     if(!navigator.geolocation){
-    //         status = "geolocation not supported!";
-    //     } else {
-    //         status = "getting location...";
-    //         navigator.geolocation.getCurrentPosition(async (position) => {
-    //             console.log('got position: ', position);
-    //             const response = await fetch(`https://nominatim.openstreetmap.org/reverse.php?lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=9&format=jsonv2`);
-    //             const data = await response.json();
-    //             console.log("data: ", data);
-    //             location = data.display_name;
-    //             photoData.location = location;
-    //             lat = data.lat;
-    //             lon = data.lon;
-    //             minLat = data.boundingbox[0];
-    //             maxLat = data.boundingbox[1];
-    //             minLon = data.boundingbox[2];
-    //             maxLon = data.boundingbox[3];
-    //             status= "got location data!";
-    //         }, (error) => {
-    //             console.log('error getting location: ',error.message);
-    //         } )
-    //     }
-    // }
 
     // Timezone stuff
     function handleDateTimeChange() {
@@ -116,17 +67,31 @@
         username = ""; 
     }
 
-    function saveSettings(){
-        // add withTags to $settings.with
-    }
-
     function handleCloudinarySuccess(event) {
         console.log("success event.detail: ", event.detail);
-        // const uploadURL = event.detail.uploadURL;
-        // const uploadURLSplit = uploadURL.split('upload/');
-        // const filename = event.detail.filename;
-        // const url = uploadURLSplit[0]+'upload/f_auto,q_auto,c_scale,w_1500/'+uploadURLSplit[1];
+        const uploadURL = event.detail.uploadURL;
+        const uploadURLSplit = uploadURL.split('upload/');
+        const filename = event.detail.filename;
+        url = uploadURLSplit[0]+'upload/f_auto,q_auto,c_scale,w_1500/'+uploadURLSplit[1];
         status = "media uploaded successfully!"
+    }
+
+    function savePhoto(){
+        console.log("photoData: ", photoData);
+        console.log("photoTags: ", photoTagsNoDuplicates);  
+        console.log("withMetadata: ", withMetadata); 
+        console.log("caption: ", caption); 
+        console.log("alt: ", altText);
+        // add to the event's JSON file
+
+        // get the array of photos from JSON file
+
+        // add new photo to array
+
+        // update the JSON file
+
+        // add to latest pics JSON
+
     }
 
 
@@ -146,17 +111,15 @@
         <label for="datetime">Date and Time:</label>
         <br/>  
         <input type="datetime-local" bind:value={datetime} on:change={handleDateTimeChange} id="datetime" required>
-        <br/>
         <br/><br/>
         <label for="caption">Title / Caption:</label>
         <br/>  
         <input type="text" bind:value={caption} id="caption" required>
-        <br/>
         <br/><br/>
         <label for="alt-text">Describe the photo:</label>
         <br/>
-        <textarea id="alt-text" name="alt-text" bind:value={altText} placeholder="Will be used as alt text and for keywords."></textarea>
-        <br/><button on:click={saveAltText} name="save-alt-text">Save Alt Text</button>
+        <textarea id="alt-text" name="alt-text" bind:value={altText} placeholder="Will be used as alt text and for keywords." rows="5" cols="33"></textarea>
+        <br/><button on:click={saveAltText} name="save-alt-text" disabled={!altText}>Save Alt Text</button>
         <br/><br/>
         Add People, Things, Places
         <br/>
@@ -168,8 +131,8 @@
         <br/>                
         <input bind:value={username} id="username" placeholder="no @" required>
         <br/>
-        <button on:click={addTag} name="add-tag">Add Tag</button>
-    
+        <button on:click={addTag} name="add-tag" disabled={!name}>Add Tag</button>
+        <br/><br/>
         <fieldset>
             <legend>Added Tags</legend>
             {#each withTags as tag (tag.slug)}
@@ -178,8 +141,15 @@
         </fieldset>
     
         <div id="status">{status}</div>
+        <br/><br/>
+        <label for="url">URL:</label>
         <br/>
-        <button on:click={() => uploadWidget.showUploadWidget()}  name="upload">Upload</button>
+        <input bind:value={url} id="url" disabled required>
+        <br/>
+        <button on:click={() => uploadWidget.showUploadWidget()}  name="upload">Upload a photo</button>
+        <br/><br/>
+        <button on:click={savePhoto} disabled={url} name="save">Save Photo</button>
+
         <UploadWidget photoData={photoData} photoTags={photoTagsNoDuplicates}  withMetadata={withMetadata} caption={caption} alt={altText} bind:this={uploadWidget} on:success={handleCloudinarySuccess} />
         <!-- <button on:click={addEvent} disabled={!allowSubmit} name="add">Add</button>
         <button on:click={saveSettings} disabled={!allowSubmit} name="save">Save Settings</button>
@@ -202,3 +172,13 @@
     <button on:click={getLocation} name="get-location">Get Location</button><button on:click={findMyLocation} name="find-location">Find My Location</button> -->
 
 </section>
+
+<style>
+    section {
+        text-align: center;
+    }
+    fieldset {
+        max-width: 300px;
+        margin: auto;
+    }
+</style>

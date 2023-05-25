@@ -241,3 +241,9 @@
     <br/>
     <button on:click={addEvent} disabled={!allowSubmit} name="add">Add Event</button>
 </section>
+
+<style>
+    section {
+        text-align: center;
+    }
+</style>

@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { user, siteURL, settings, events, locations } from '../stores.js';
+    import { user, siteURL, settings, events, locations, latestPics } from '../stores.js';
     import Dashboard from './Dashboard.svelte';
     let loggedIn = false;
     let isAuth = false;
@@ -28,6 +28,9 @@
                     const locationsResponse = await fetch(`/.netlify/functions/get_locations`);
                     $locations = await locationsResponse.json();
                     console.log("locations: ", $locations);
+                    const latestPicsResponse = await fetch(`/.netlify/functions/get_latest_pics`);
+                    $latestPics = await latestPicsResponse.json();
+                    console.log("latestPics: ", $latestPics);
                 }catch(error){
                     console.log("error getting events and/or locations: ", error);
                 }
@@ -126,7 +129,7 @@
 <section>
     {#if $user && loggedIn && isAuth}
         <button on:click={logout} class="logout">logout</button>
-        {#if $events && $locations}
+        {#if $events && $locations && $latestPics}
             <Dashboard />
         {:else}
             <p>loading...</p>

@@ -1,5 +1,5 @@
 <script>
-    import { user, siteURL, settings } from '../stores.js';
+    import { user, siteURL, settings, events } from '../stores.js';
     let selectedEvent;
 
     async function handleOnChange() {
@@ -14,10 +14,10 @@
 </script>
 <section>
     <h1>View photos</h1>
-    {#if $settings.events}
+    {#if $events}
         <select bind:value={selectedEvent} on:change="{handleOnChange}">
             <option value="">select an event</option>
-            {#each $settings.events as event}
+            {#each $events as event}
                 <option value={event}>
                     {event.title}
                 </option>

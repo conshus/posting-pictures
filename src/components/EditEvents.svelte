@@ -1,14 +1,32 @@
 <script>
     import { user, siteURL, settings, events, locations } from '../stores.js';
     let selectedEvent;
+    let selectedEventIndex;
     let selectedLocation;
     let datetime;
+    let status="";
 
-    // $: dateTimeValue = (new Date(selectedEvent.timeInMs)).toISOString().replace('Z','')
+    // Example POST method implementation:
+    async function postData(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + $user.token.access_token
+            },
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
 
-    function handleEventSelectChange() {
-        console.log("handleEcentSelectChange: ", selectedEvent);
-        datetime = (new Date(selectedEvent.timeInMs)).toISOString().replace('Z','');
+    function handleEventSelectChange(e) {
+        console.log("handleEventSelectChange e: ", e.target.value);
+        if (e.target.value){
+            selectedEventIndex = e.target.value;
+            selectedEvent = {...$events[selectedEventIndex]};
+            datetime = (new Date(selectedEvent.timeInMs)).toISOString().replace('Z','');
+        }
     }
 
     function handleDateTimeChange() {
@@ -42,36 +60,60 @@
 
     }
 
-    function updateEvent(){
+    async function updateEvent(){
         console.log("update event");
         selectedEvent.group = selectedEvent.title.split('')[0].toUpperCase();
         console.log("updateEvent selectedEvent: ", selectedEvent);
+        console.log("selectedEventIndex: ", selectedEventIndex);
+        console.log("$events[selectedEventIndex]: ",$events[selectedEventIndex]);
+        console.log("$events[selectedEventIndex] === selectedEvent: ",$events[selectedEventIndex] === selectedEvent);
+        $events[selectedEventIndex] = selectedEvent;
+        status = "saving to events list";
+        try {
+            const saveToEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
+            status = "events saved successfully"
+            console.log("saveToEventsResponse: ", saveToEventsResponse);
+        }catch(error){
+            console.error("error: ",error);
+            status = error;
+        }
     }
 
-    function removeEvent(){
-        console.log("remove event");
+    async function removeEvent(){
+        status = "removing event from list";
+        console.log("remove event: ", $events);
+        $events.splice(selectedEventIndex,1);
+        $events = $events;
+        try {
+            const removeEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
+            status = "event removed successfully"
+            console.log("removeEventsResponse: ", removeEventsResponse);
+            console.log("remove Event: ", $events);
+            selectedEvent = undefined;
+        }catch(error){
+            console.error("error: ",error);
+            status = error;
+        }
     }
-
-
 
 </script>
 <section>
-    View Events
     {#if $events.length === 0}
         <div>No events yet. Please add one.</div>
     {:else}
-        <select bind:value={selectedEvent} on:change="{handleEventSelectChange}">
+        <label for="events">Events: </label>
+        <select id="events" on:change="{handleEventSelectChange}">
             <option value={undefined} selected={!selectedEvent}>select an event</option>
-            {#each $events as event}
-                <option value={event}>
-                    {event.title}
+            {#each $events as eventObj, i}
+                <option value={i}>
+                    {eventObj.title}
                 </option>
             {/each}
         </select>
+        <br/><br/>
     {/if}
     {#if selectedEvent}
-        <br/>
-        <label for="event">Event:</label>
+        <label for="event">Name:</label>
         <br/>        
         <input bind:value={selectedEvent.title} id="title" required>
         <br/><br/>
@@ -82,7 +124,7 @@
         <label for="datetime">Date and Time:</label>
         <br/>  
         <input type="datetime-local" bind:value={datetime} on:change={handleDateTimeChange} id="datetime" required>
-        <br/>
+        <br/><br/>
         <label for="location">Location:</label>
         <br/>        
         <select id="location"  bind:value={selectedLocation} on:change="{handleLocationSelectChange}">
@@ -92,11 +134,18 @@
                 </option>
             {/each}
         </select>
-
+        <br/><br/>
         <button on:click={updateEvent} name="update-event">Update</button>
         <button on:click={removeEvent} name="remove-event">Remove from list</button>
         <p>** Removing an event does not delete it. It only removes from the list.</p>
+        {status}
     {:else}
-        please select an event
+        <p>please select an event</p>
     {/if}
 </section>
+
+<style>
+    section {
+        text-align: center;
+    }
+</style>
