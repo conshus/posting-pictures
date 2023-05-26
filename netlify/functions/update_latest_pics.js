@@ -31,9 +31,21 @@ exports.handler = async (event, context) => {
 
 
         if (user.app_metadata.provider === data.login_providers[0] && user.email === data.email && userId === dataId ){
-            // Authorized
             console.log("event.body: ", event.body);
-            const base64newEventContents = Buffer.from([]).toString('base64');
+            const base64updatedLatestPicsContents = Buffer.from(event.body).toString('base64');
+
+            console.log("get latest pics file");
+            const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+                owner: data.slug,
+                repo: githubRepo,
+                path: 'post-pics-latest-pics.json',
+                headers: {
+                  'X-GitHub-Api-Version': '2022-11-28'
+                }
+            });
+            console.log("originalFile: ",originalFile);
+            console.log("get sha");
+            const originalFileSHA = originalFile.data.sha;
 
             console.log("create event file");
             // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#create-or-update-file-contents
@@ -41,14 +53,14 @@ exports.handler = async (event, context) => {
             await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
                 owner: data.slug,
                 repo: githubRepo,
-                path: `${event.body.replaceAll('"', '')}.json`,
-                message: `adding ${event.body.replaceAll('"', '')} - ${Date.now()}`,
+                path: 'post-pics-latest-pics.json',
+                message: `updating 'post-pics-latest-pics.json' - ${Date.now()}`,
                 committer: {
                   name: user.user_metadata.full_name,
                   email: user.email
                 },
-                content: base64newEventContents,
-                // sha: originalFileSHA,
+                content: base64updatedLatestPicsContents,
+                sha: originalFileSHA,
                 headers: {
                   'X-GitHub-Api-Version': '2022-11-28'
                 }
@@ -87,7 +99,5 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({status: 'Not Authorized!'}),
         };
     }
-
-
-      
+    
 };

@@ -86,7 +86,7 @@
         $events = $events;
         try {
             const removeEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
-            status = "event removed successfully"
+            status = "event removed successfully";
             console.log("removeEventsResponse: ", removeEventsResponse);
             console.log("remove Event: ", $events);
             selectedEvent = undefined;
@@ -137,7 +137,7 @@
         <br/><br/>
         <button on:click={updateEvent} name="update-event">Update</button>
         <button on:click={removeEvent} name="remove-event">Remove from list</button>
-        <p>** Removing an event does not delete it. It only removes from the list.</p>
+        <p>** Removing an event does not delete it. It only removes it from the list.</p>
         {status}
     {:else}
         <p>please select an event</p>

@@ -1,7 +1,6 @@
-const { GITHUB_PAT, NETLIFY_PAT, SITE_ID } = process.env;
+const { CLOUDINARY_NAME, NETLIFY_PAT, SITE_ID } = process.env;
 import fetch from 'node-fetch';
-import { Octokit } from "@octokit/core";
-const octokit = new Octokit({ auth: GITHUB_PAT });
+
 
 exports.handler = async (event, context) => {
 
@@ -32,27 +31,6 @@ exports.handler = async (event, context) => {
 
         if (user.app_metadata.provider === data.login_providers[0] && user.email === data.email && userId === dataId ){
             // Authorized
-            console.log("event.body: ", event.body);
-            const base64newEventContents = Buffer.from([]).toString('base64');
-
-            console.log("create event file");
-            // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#create-or-update-file-contents
-            // await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-            await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-                owner: data.slug,
-                repo: githubRepo,
-                path: `${event.body.replaceAll('"', '')}.json`,
-                message: `adding ${event.body.replaceAll('"', '')} - ${Date.now()}`,
-                committer: {
-                  name: user.user_metadata.full_name,
-                  email: user.email
-                },
-                content: base64newEventContents,
-                // sha: originalFileSHA,
-                headers: {
-                  'X-GitHub-Api-Version': '2022-11-28'
-                }
-            });
 
             return {
                 statusCode: 200,
@@ -61,7 +39,7 @@ exports.handler = async (event, context) => {
                     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                     'Access-Control-Allow-Methods': '*', 
                 },
-                body: JSON.stringify({data}),
+                body: JSON.stringify(CLOUDINARY_NAME),
             };    
         } else {
             return {
@@ -87,7 +65,4 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({status: 'Not Authorized!'}),
         };
     }
-
-
-      
 };

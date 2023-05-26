@@ -1,6 +1,8 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, onMount } from 'svelte';
+    import { user } from '../stores.js';
     const dispatch = createEventDispatcher();
+    let cloudName;
     export let photoData = {};
     export let photoTags = [];
     export let caption = "";
@@ -9,10 +11,36 @@
 
     $: withString =  withMetadata.join(' ');
 
+    // Example POST method implementation:
+    async function postData(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + $user.token.access_token
+            },
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
+
+
+    onMount(async () => {
+        console.log("onMount");
+        try{
+            cloudName = await postData(`/.netlify/functions/get_cloudname`);
+            console.log("cloudName: ", cloudName);
+        }catch(error){
+            console.log("error getting cloudname: ", error);
+        }
+
+    });
+
     export function showUploadWidget() {
         console.log(" withMetadata: ",  withMetadata);
         cloudinary.openUploadWidget({
-            cloudName: "dwane", // need to make this a variable or something
+            cloudName,
             uploadPreset: "posting-pictures",
             folder: `posting-pictures/${photoData.slug}`,
             tags: [...Object.values(photoData), ...photoTags],

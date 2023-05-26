@@ -134,6 +134,9 @@
         {:else}
             <p>loading...</p>
         {/if}
+    {:else if !isAuth && loggedIn}
+        <button on:click={logout} class="logout">logout</button>
+        authorizing...
     {:else if $user && loggedIn}
         <button on:click={logout} class="logout">logout</button>
         not authorized!

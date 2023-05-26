@@ -6,6 +6,8 @@ const octokit = new Octokit({ auth: GITHUB_PAT });
 exports.handler = async (event, context) => {
 
     const { identity, user } = context.clientContext;
+    const eventSlug = event.queryStringParameters && event.queryStringParameters.slug
+
 
     if (user){
         const userResponse = await fetch('https://api.netlify.com/api/v1/user',{
@@ -31,9 +33,21 @@ exports.handler = async (event, context) => {
 
 
         if (user.app_metadata.provider === data.login_providers[0] && user.email === data.email && userId === dataId ){
-            // Authorized
             console.log("event.body: ", event.body);
-            const base64newEventContents = Buffer.from([]).toString('base64');
+            const base64updatedEventContents = Buffer.from(event.body).toString('base64');
+
+            console.log("get settings file");
+            const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+                owner: data.slug,
+                repo: githubRepo,
+                path: `${eventSlug}.json`,
+                headers: {
+                  'X-GitHub-Api-Version': '2022-11-28'
+                }
+            });
+            console.log("originalFile: ",originalFile);
+            console.log("get sha");
+            const originalFileSHA = originalFile.data.sha;
 
             console.log("create event file");
             // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#create-or-update-file-contents
@@ -41,14 +55,14 @@ exports.handler = async (event, context) => {
             await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
                 owner: data.slug,
                 repo: githubRepo,
-                path: `${event.body.replaceAll('"', '')}.json`,
-                message: `adding ${event.body.replaceAll('"', '')} - ${Date.now()}`,
+                path: `${eventSlug}.json`,
+                message: `updating ${eventSlug}.json - ${Date.now()}`,
                 committer: {
                   name: user.user_metadata.full_name,
                   email: user.email
                 },
-                content: base64newEventContents,
-                // sha: originalFileSHA,
+                content: base64updatedEventContents,
+                sha: originalFileSHA,
                 headers: {
                   'X-GitHub-Api-Version': '2022-11-28'
                 }
@@ -87,7 +101,5 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({status: 'Not Authorized!'}),
         };
     }
-
-
-      
+    
 };

@@ -1,5 +1,5 @@
 <script>
-    import { user, siteURL, settings, events } from '../stores.js';
+    import { user, siteURL, events, latestPics } from '../stores.js';
     import UploadWidget from './UploadWidget.svelte';
     let datetime;
     let location;
@@ -9,6 +9,7 @@
     let yearMonth;
     let caption;
     let altText;
+    let altTextStatus = "";
     let name;
     let username;
     let withTags = [];
@@ -17,9 +18,25 @@
     let uploadWidget;
     let status = "";
     let url;
-    $: allowSubmit = location && datetime;
+    let filename;
+    $: allowSubmit = caption && altText && url;
     $: slug = name && name.toLowerCase().replaceAll(' ','-');
     $: photoTagsNoDuplicates = Array.from(new Set(photoTags));
+
+    // Example POST method implementation:
+    async function postData(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + $user.token.access_token
+            },
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
+
 
     // Timezone stuff
     function handleDateTimeChange() {
@@ -51,17 +68,25 @@
     }
 
     function saveAltText(){
+        altTextStatus = "";
         console.log("saveAltText", altText);
         const commonWords = ["the","be","of","and","a","in","to","have","it","for","I","that","you","he","on","with","do","at","by","not","this","but","from","they","his","that","she","or","which","as","we","an","say","will","would","can","if","their","go","what","there","all","get","her","make","who","as","out","up","see","know","time","take","them","some","could","so","him","year","into","its","then","think","my","come","than","more","about","now","last","your","me","no","other","give","just","should","these","people","also","well","any","only","new","very","when","may","way","look","like","use","her","such","how","because","when","as","good","find","is"];
         const keywords = altText.replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase().split(" ").filter(word => !commonWords.includes(word));
         photoTags = [...photoTags, ...keywords];
         console.log("saveAltText photoTags: ",photoTags); 
+        altTextStatus = "Alt Text saved!";
     }
 
     function addTag(){
-        withTags = [...withTags, {name,slug,username: username.replaceAll('@',''),group:name.toUpperCase().split("")[0]}];
-        withMetadata = [...withMetadata, name, slug, username.replaceAll('@','')];
-        photoTags = [...photoTags, name, slug, username.replaceAll('@','')];
+        if (username){
+            withTags = [...withTags, {name,slug,username: username.replaceAll('@',''),group:name.toUpperCase().split("")[0]}];
+            withMetadata = [...withMetadata, name, slug, username.replaceAll('@','')];
+            photoTags = [...photoTags, name, slug, username.replaceAll('@','')];
+        } else {
+            withTags = [...withTags, {name,slug,group:name.toUpperCase().split("")[0]}];
+            withMetadata = [...withMetadata, name, slug];
+            photoTags = [...photoTags, name, slug];
+        }
         console.log("addTag photoTags: ",photoTags);
         name = "";
         username = ""; 
@@ -71,27 +96,54 @@
         console.log("success event.detail: ", event.detail);
         const uploadURL = event.detail.uploadURL;
         const uploadURLSplit = uploadURL.split('upload/');
-        const filename = event.detail.filename;
+        filename = event.detail.filename;
+        photoData.filename = event.detail.filename;
         url = uploadURLSplit[0]+'upload/f_auto,q_auto,c_scale,w_1500/'+uploadURLSplit[1];
         status = "media uploaded successfully!"
     }
 
-    function savePhoto(){
+    async function savePhoto(){
         console.log("photoData: ", photoData);
         console.log("photoTags: ", photoTagsNoDuplicates);  
         console.log("withMetadata: ", withMetadata); 
         console.log("caption: ", caption); 
         console.log("alt: ", altText);
-        // add to the event's JSON file
+        console.log("url: ", url);
 
-        // get the array of photos from JSON file
+        const newPicToAdd = {...photoData, altText, url, tags:photoTagsNoDuplicates, with:withMetadata, caption};
 
-        // add new photo to array
+        try {
+            // get the array of event photos from JSON file
+            const getEventResponse = await fetch(`/.netlify/functions/get_event?slug=${photoData.slug}`);
+            let eventPics = await getEventResponse.json();
+            console.log("eventPhotos: ", eventPhotos);
 
-        // update the JSON file
+            // add new photo to array
+            eventPics = [...eventPics, newPicToAdd];
+            console.log("eventPhotos: ", eventPhotos);
 
-        // add to latest pics JSON
+            // update the event JSON file
+            const updateEventResponse = await postData(`/.netlify/functions/update_event?slug=${photoData.slug}`, eventPics);
+            status = "event updated successfully"
+            console.log("updateEventResponse: ", updateEventResponse);
 
+            // add to latest pics JSON
+            if ($latestPics.length === 50){
+                console.log('latest pics is full.')
+                $latestPics.pop();
+            }
+            $latestPics = [ newPicToAdd, ...$latestPics ];
+            status = "adding to latest pics"
+            const updatelatestPicsResponse = await postData(`/.netlify/functions/update_latest_pics`, $latestPics);
+            status = "pic added to latest successfully"
+            console.log("updateEventResponse: ", updatelatestPicsResponse);
+
+            // show Twitter link
+
+
+        }catch(error) {
+            console.error('Error: ', error);
+        }
     }
 
 
@@ -120,6 +172,7 @@
         <br/>
         <textarea id="alt-text" name="alt-text" bind:value={altText} placeholder="Will be used as alt text and for keywords." rows="5" cols="33"></textarea>
         <br/><button on:click={saveAltText} name="save-alt-text" disabled={!altText}>Save Alt Text</button>
+        <br/><div id="alt-text-status">{altTextStatus}</div>
         <br/><br/>
         Add People, Things, Places
         <br/>
@@ -136,7 +189,7 @@
         <fieldset>
             <legend>Added Tags</legend>
             {#each withTags as tag (tag.slug)}
-                <div>{tag.name} {tag.username}</div>
+                <div>{tag.name} {tag.username ? tag.username : ''}</div>
             {/each}
         </fieldset>
     
@@ -146,9 +199,9 @@
         <br/>
         <input bind:value={url} id="url" disabled required>
         <br/>
-        <button on:click={() => uploadWidget.showUploadWidget()}  name="upload">Upload a photo</button>
+        <button on:click={() => uploadWidget.showUploadWidget()} disabled={!photoData} name="upload">Upload a photo</button>
         <br/><br/>
-        <button on:click={savePhoto} disabled={url} name="save">Save Photo</button>
+        <button on:click={savePhoto} disabled={!allowSubmit} name="save">Save Photo</button>
 
         <UploadWidget photoData={photoData} photoTags={photoTagsNoDuplicates}  withMetadata={withMetadata} caption={caption} alt={altText} bind:this={uploadWidget} on:success={handleCloudinarySuccess} />
         <!-- <button on:click={addEvent} disabled={!allowSubmit} name="add">Add</button>
