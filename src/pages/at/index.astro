@@ -16,9 +16,6 @@ function groupBy(objectArray, property) {
 const response = await fetch(siteURL+"/.netlify/functions/get_events")
 const data = await response.json();
 groupedEvents = groupBy(data, "group");
-console.log("groupedEvents: ", groupedEvents);
-console.log("Object.values(groupedEvents): ",Object.values(groupedEvents));
-console.log("Object.keys(groupedEvents): ",Object.keys(groupedEvents));
 groupedKeys = Object.keys(groupedEvents).sort();
 groupedValues = Object.values(groupedEvents).sort();
 
@@ -41,13 +38,18 @@ groupedValues = Object.values(groupedEvents).sort();
 		box-sizing: border-box;
 	}
 
+	dl {
+		max-width: 1000px;
+		margin: auto;
+	}
+
 	dl > div {
 		background: #fff;
 		padding: 24px 0 0 0;
 	}
 
 	dt {
-		background: #b8c1c8;
+		background: #000000;
 		border-bottom: 1px solid #989ea4;
 		border-top: 1px solid #717d85;
 		color: #fff;
@@ -70,14 +72,3 @@ groupedValues = Object.values(groupedEvents).sort();
 		border-top: 1px solid #ccc;
 	}
 </style>
-<!-- <ul>
-	{groupedKeys.map((keyLetter,index) => (
-		<h1>{keyLetter}</h1>
-		<ul>
-			{groupedValues[index].map((eventData) => (
-				<li><a href={Astro.url+"/"+eventData.slug}>{eventData.title}</a></li>
-			))}
-		</ul>
-	))}
-</ul> -->
-
