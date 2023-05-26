@@ -22,10 +22,55 @@ console.log("Object.keys(groupedEvents): ",Object.keys(groupedEvents));
 groupedKeys = Object.keys(groupedEvents).sort();
 groupedValues = Object.values(groupedEvents).sort();
 
-
+// Based on MDN demo:https://developer.mozilla.org/en-US/docs/Web/CSS/position#sticky_positioning
 ---
 
-<ul>
+<dl>
+	{groupedKeys.map((keyLetter,index) => (
+		<div>
+			<dt>{keyLetter}</dt>
+			{groupedValues[index].map((eventData) => (
+				<dd><a href={Astro.url+"/"+eventData.slug}>{eventData.title}</a></dd>
+			))}
+		</div>
+	))}
+</dl>
+
+<style>
+	* {
+		box-sizing: border-box;
+	}
+
+	dl > div {
+		background: #fff;
+		padding: 24px 0 0 0;
+	}
+
+	dt {
+		background: #b8c1c8;
+		border-bottom: 1px solid #989ea4;
+		border-top: 1px solid #717d85;
+		color: #fff;
+		font: bold 18px/21px Helvetica, Arial, sans-serif;
+		margin: 0;
+		padding: 2px 0 0 12px;
+		position: -webkit-sticky;
+		position: sticky;
+		top: -1px;
+	}
+
+	dd {
+		font: bold 20px/45px Helvetica, Arial, sans-serif;
+		margin: 0;
+		padding: 0 0 0 12px;
+		white-space: nowrap;
+	}
+
+	dd + dd {
+		border-top: 1px solid #ccc;
+	}
+</style>
+<!-- <ul>
 	{groupedKeys.map((keyLetter,index) => (
 		<h1>{keyLetter}</h1>
 		<ul>
@@ -34,5 +79,5 @@ groupedValues = Object.values(groupedEvents).sort();
 			))}
 		</ul>
 	))}
-</ul>
+</ul> -->
 
