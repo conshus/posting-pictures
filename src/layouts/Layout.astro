@@ -34,7 +34,7 @@ console.log("rightMenu: ", rightMenu);
 			<section>
 				<menu>
 					{leftMenu.map((path) => (
-						<li><a href={Astro.url+"/"+path}>/{path}</a></li>
+						<li><a href={Astro.url.origin+"/"+path}>/{path}</a></li>
 					))}
 				</menu>
 				<menu>
