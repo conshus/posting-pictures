@@ -4,6 +4,18 @@ export interface Props {
 }
 
 const { title } = Astro.props;
+const paths = ['at']
+
+console.log("Astro.url.pathname: ",(Astro.url.pathname.split("/")));
+console.log("set Astro.url.pathname: ",Array.from(new Set(Astro.url.pathname.split("/"))));
+
+const pathElements = Array.from(new Set(Astro.url.pathname.split("/")));
+
+const leftMenu = [...pathElements];
+leftMenu.pop();
+
+const rightMenu = paths.filter(path => !pathElements.includes(path));
+console.log("rightMenu: ", rightMenu);
 ---
 
 <!DOCTYPE html>
@@ -18,14 +30,38 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<header>
-			<menu>
-				<li><a href="/at">/at</a></li>
-			</menu>
+			<section>
+				<menu>
+					{paths.map((path) => (
+						<li><a href={"./"+path}>/{path}</a></li>
+					))}
+				</menu>
+				<menu>
+					{rightMenu.map((path) => (
+						<li><a href={path}>/{path}</a></li>
+					))}
+				</menu>
+			</section>
 		</header>
 		<slot />
+		<footer>
+			<section>
+				<menu>
+					<li><a href="https://posting.pictures">Posting.Pictures</a></li>
+				</menu>
+			</section>
+		</footer>
 	</body>
 </html>
 <style is:global>
+	* {
+		box-sizing: border-box;
+	}
+
+	body {
+		margin: 75px 0 50px 0;
+	}
+
 	:root {
 		--accent: 124, 58, 237;
 		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #da62c4 30%, white 60%);
@@ -39,21 +75,68 @@ const { title } = Astro.props;
 			Bitstream Vera Sans Mono, Courier New, monospace;
 	}
 
+	section {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		max-width: 1000px;
+		margin: 0 auto;
+	}
+
 	header {
 		width: 100vw;
-		height: 100px;
+		height: 75px;
 		background-color: #000000;
 		display: flex;
 		align-items: center;
 		color: #ffffff;
+		font-size: 30px;
+		position: fixed;
+		top: 0;
+		z-index: 50;
+	}
+
+	header section {
+		justify-content: space-between;
+	}
+
+	/* header menu {
+		justify-content: space-around;
+	} */
+
+	header a, footer a {
+		color: white;
+		margin: 0 10px;
 	}
 
 	menu {
-		width: 100%;
+		/* width: 100%;
 		max-width: 1000px;
+		margin: auto; */
+		text-align: right;
+		display: flex;
+		padding: 0;
+	    list-style-type: none;
 	}
 
 	footer {
-		width:
+		width: 100vw;
+		height: 50px;
+		background-color: #000000;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		justify-content: end;
+		align-items: center;
+		font-weight: bolder;
+	}
+
+	footer section {
+		justify-content: end;
+	}
+
+	li {
+		list-style: none;
+		list-style-position: outside;
 	}
 </style>

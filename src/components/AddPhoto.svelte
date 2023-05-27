@@ -116,11 +116,11 @@
             // get the array of event photos from JSON file
             const getEventResponse = await fetch(`/.netlify/functions/get_event?slug=${photoData.slug}`);
             let eventPics = await getEventResponse.json();
-            console.log("eventPhotos: ", eventPhotos);
+            console.log("eventPics: ", eventPics);
 
             // add new photo to array
             eventPics = [...eventPics, newPicToAdd];
-            console.log("eventPhotos: ", eventPhotos);
+            console.log("eventPics: ", eventPics);
 
             // update the event JSON file
             const updateEventResponse = await postData(`/.netlify/functions/update_event?slug=${photoData.slug}`, eventPics);

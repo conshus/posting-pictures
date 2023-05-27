@@ -1,4 +1,6 @@
 ---
+import Layout from '../../layouts/Layout.astro';
+
 let groupedEvents;
 let groupedKeys = [];
 let groupedValues = [];
@@ -22,16 +24,20 @@ groupedValues = Object.values(groupedEvents).sort();
 // Based on MDN demo:https://developer.mozilla.org/en-US/docs/Web/CSS/position#sticky_positioning
 ---
 
-<dl>
-	{groupedKeys.map((keyLetter,index) => (
-		<div>
-			<dt>{keyLetter}</dt>
-			{groupedValues[index].map((eventData) => (
-				<dd><a href={Astro.url+"/"+eventData.slug}>{eventData.title}</a></dd>
-			))}
-		</div>
-	))}
-</dl>
+<Layout title="Welcome to Astro.">
+
+	<dl>
+		{groupedKeys.map((keyLetter,index) => (
+			<div>
+				<dt>{keyLetter}</dt>
+				{groupedValues[index].map((eventData) => (
+					<dd><a href={Astro.url+"/"+eventData.slug}>{eventData.title}</a></dd>
+				))}
+			</div>
+		))}
+	</dl>
+
+</Layout>
 
 <style>
 	* {
@@ -58,7 +64,7 @@ groupedValues = Object.values(groupedEvents).sort();
 		padding: 2px 0 0 12px;
 		position: -webkit-sticky;
 		position: sticky;
-		top: -1px;
+		top: 75px;
 	}
 
 	dd {

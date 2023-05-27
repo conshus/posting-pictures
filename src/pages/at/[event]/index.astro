@@ -1,11 +1,23 @@
 ---
+import Layout from '../../../layouts/Layout.astro';
 const { event } = Astro.params;
 let siteURL = Astro.url.origin;
+console.log("Astro.url: ", Astro.url);
 
 const response = await fetch(siteURL+"/.netlify/functions/get_event?slug="+event);
 const data = await response.json();
 console.log("data: ", data);
 
 ---
+<Layout title="Welcome to Astro.">
+    <section>
+        <h1>{event}: {data.length}</h1>
+    </section>
+</Layout>
 
-<h1>{event}: {data.length}</h1>
+<style>
+    section {
+        max-width: 1000px;
+        margin: auto;
+    }
+</style>
