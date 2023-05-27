@@ -6,6 +6,7 @@ export interface Props {
 const { title } = Astro.props;
 const paths = ['at']
 
+console.log("Astro.url: ",Astro.url);
 console.log("Astro.url.pathname: ",(Astro.url.pathname.split("/")));
 console.log("set Astro.url.pathname: ",Array.from(new Set(Astro.url.pathname.split("/"))));
 
@@ -33,7 +34,7 @@ console.log("rightMenu: ", rightMenu);
 			<section>
 				<menu>
 					{leftMenu.map((path) => (
-						<li><a href={"./"+path}>/{path}</a></li>
+						<li><a href={Astro.url+"/"+path}>/{path}</a></li>
 					))}
 				</menu>
 				<menu>
