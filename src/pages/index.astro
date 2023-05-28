@@ -5,9 +5,9 @@ import Card from '../components/Card.astro';
 let siteURL = Astro.url.origin;
 
 // const response = await fetch(siteURL+"/.netlify/functions/get_latest_pics");
-// const response = await fetch(siteURL+"/.netlify/functions/get_latest_pics");
-// const data = await response.json();
-// console.log("data: ", data);
+const response = await fetch(siteURL+"/.netlify/functions/get_latest_pics");
+const data = await response.json();
+console.log("data: ", data);
 
 ---
 
