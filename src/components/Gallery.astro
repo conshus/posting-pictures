@@ -1,0 +1,204 @@
+---
+const { photos } = Astro.props;
+
+---
+
+<main>
+	<div class="navigation">
+		{photos.length > 5 ? <button id="prev">previous</button> : "" }
+	</div>
+	<section id="photos-section" data-photos={JSON.stringify(photos)}>
+		{photos.map((photo, index) =>(
+			index < 5 ? <div class="photo-container"><div class="photo"><a href={photo.filename}><img src={photo.url} alt={photo.altText} /></a></div></div> : ""
+		))}
+	</section>
+	<div class="navigation">
+		{photos.length > 5 ? <button id="next">next</button> : "" }
+	</div>
+</main>
+
+
+<script>
+	import { galleryInit } from '../scripts/gallery.js';
+
+	galleryInit();
+</script>
+
+<style is:inline>
+	main {
+		display: flex;
+	}
+	.navigation {
+		align-self: center;
+		text-align: center;
+		width: 100px;
+	}
+	.photo-container {
+		border-radius: 15px;
+		margin: 3px;
+		max-height: 90vh;
+		overflow: hidden;
+	}
+	.photo-container:focus-within {
+		border: 7px black solid;
+		border-radius: 22px;
+	}
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		overflow: clip;
+		border-radius: 15px;
+	}
+	#photos-section {
+		/* background-color: green; */
+		display: grid;
+		width: 100%;
+		height: 90vh;
+		max-height: 90vh;
+		/* max-width: 800px; */
+		/* place-items: center; */
+		grid-template-rows: 1fr 1fr 1fr 1fr;
+	    grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
+	section:has(.photo-container) {
+		/* background-color: red; */
+		grid-template-areas:
+    "one one one one"
+    "one one one one"
+    "one one one one"
+    "one one one one";
+	}
+	section:has(.photo-container + .photo-container) {
+		/* background-color: yellow; */
+		grid-template-areas:
+    "two two one one"
+    "two two one one"
+    "two two one one"
+    "two two one one";
+
+	}
+	section:has(.photo-container + .photo-container + .photo-container) {
+		/* background-color: purple; */
+		grid-template-areas:
+    "two two one one"
+    "two two one one"
+    "three three one one"
+    "three three one one";
+	}
+	section:has(.photo-container + .photo-container + .photo-container + .photo-container) {
+		/* background-color: black; */
+		grid-template-areas:
+    "two two one one"
+    "two two one one"
+    "three four one one"
+    "three four one one";
+	}
+	section:has(.photo-container + .photo-container + .photo-container + .photo-container + .photo-container) {
+		/* background-color: blue; */
+		grid-template-areas:
+    "two two one one"
+    "two two one one"
+    "three five one one"
+    "three four one one";
+	}
+
+	/* div {
+		animation: 3s ease 0s normal forwards 1 fadein;
+	} */
+
+	.photo {
+		width: 100%;
+		height: 100%;
+	}
+	.photo-container {
+		opacity:0;
+	}
+
+	.photo-container:nth-child(1) {
+		grid-area: one;
+		/* background-color: red; */
+		animation: 3s ease 0s normal forwards 1 fadein;
+
+	}
+
+	.photo-container:nth-child(2) {
+		grid-area: two;
+		/* background-color: yellow; */
+		animation: 3s ease 1s normal forwards 1 fadein;
+	}
+
+	.photo-container:nth-child(3) {
+		grid-area: three;
+		/* background-color: purple; */
+		animation: 3s ease 2s normal forwards 1 fadein;
+
+	}
+
+	.photo-container:nth-child(4) {
+		grid-area: four;
+		/* background-color: black; */
+		animation: 3s ease 3s normal forwards 1 fadein;
+
+	}
+
+	.photo-container:nth-child(5) {
+		max-height:25vh;
+		grid-area: five;
+		/* background-color: blue; */
+		animation: 3s ease 4s normal forwards 1 fadein;
+
+	}
+
+	.photo-container.transition {
+		opacity: 1;
+	}
+
+	.photo-container.transition:nth-child(1) {
+		grid-area: one;
+		/* background-color: red; */
+		animation: none;
+
+	}
+
+	.photo-container.transition:nth-child(2) {
+		grid-area: two;
+		/* background-color: yellow; */
+		animation: none;
+	}
+
+	.photo-container.transition:nth-child(3) {
+		grid-area: three;
+		/* background-color: purple; */
+		animation: none;
+
+	}
+
+	.photo-container.transition:nth-child(4) {
+		grid-area: four;
+		/* background-color: black; */
+		animation: none;
+
+	}
+
+	.photo-container.transition:nth-child(5) {
+		max-height:25vh;
+		grid-area: five;
+		/* background-color: blue; */
+		animation: none;
+
+	}
+
+	@keyframes fadein{
+    0% { opacity:0; }
+    /* 66% { opacity:0; } */
+    100% { opacity:1; }
+}
+
+@-webkit-keyframes fadein{
+    0% { opacity:0; }
+    /* 66% { opacity:0; } */
+    100% { opacity:1; }
+}
+
+</style>
