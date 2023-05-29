@@ -8,7 +8,6 @@ exports.handler = async (event, context) => {
     const { identity, user } = context.clientContext;
     const eventSlug = event.queryStringParameters && event.queryStringParameters.slug
 
-
     if (user){
         const userResponse = await fetch('https://api.netlify.com/api/v1/user',{
             method: 'get',
@@ -31,12 +30,10 @@ exports.handler = async (event, context) => {
         const siteData = await siteResponse.json();
         const githubRepo = siteData.build_settings.repo_path.split(`${data.slug}/`)[1];
 
-
         if (user.app_metadata.provider === data.login_providers[0] && user.email === data.email && userId === dataId ){
-            console.log("event.body: ", event.body);
             const base64updatedEventContents = Buffer.from(event.body).toString('base64');
 
-            console.log("get settings file");
+            console.log("get event file");
             const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
                 owner: data.slug,
                 repo: githubRepo,
@@ -45,13 +42,12 @@ exports.handler = async (event, context) => {
                   'X-GitHub-Api-Version': '2022-11-28'
                 }
             });
-            console.log("originalFile: ",originalFile);
+
             console.log("get sha");
             const originalFileSHA = originalFile.data.sha;
 
-            console.log("create event file");
+            console.log("update event file");
             // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#create-or-update-file-contents
-            // await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
             await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
                 owner: data.slug,
                 repo: githubRepo,
@@ -75,7 +71,7 @@ exports.handler = async (event, context) => {
                     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                     'Access-Control-Allow-Methods': '*', 
                 },
-                body: JSON.stringify({data}),
+                body: JSON.stringify({status: 'Success'}),
             };    
         } else {
             return {

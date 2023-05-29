@@ -155,7 +155,6 @@
             status = "events saved successfully"
             console.log("saveToEventsResponse: ", saveToEventsResponse);
             clearForm();
-
         } catch (error) {
             status = error;
         }

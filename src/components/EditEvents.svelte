@@ -136,8 +136,13 @@
         </select>
         <br/><br/>
         <button on:click={updateEvent} name="update-event">Update</button>
-        <button on:click={removeEvent} name="remove-event">Remove from list</button>
-        <p>** Removing an event does not delete it. It only removes it from the list.</p>
+        <br/><br/>
+        <details>
+            <summary>Remove event</summary>
+            <br/>
+            <button on:click={removeEvent} name="remove-event">Remove from list</button>
+        </details>
+        <p>** Removing an event does not delete it. It only removes it from the list and site.</p>
         {status}
     {:else}
         <p>please select an event</p>
@@ -147,5 +152,8 @@
 <style>
     section {
         text-align: center;
+    }
+    details {
+        cursor: pointer;
     }
 </style>

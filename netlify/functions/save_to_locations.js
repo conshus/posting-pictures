@@ -70,7 +70,7 @@ exports.handler = async (event, context) => {
                     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                     'Access-Control-Allow-Methods': '*', 
                 },
-                body: JSON.stringify({data,originalFile}),
+                body: JSON.stringify({status: 'Success'}),
             };    
         } else {
             return {
