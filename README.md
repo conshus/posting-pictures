@@ -10,7 +10,7 @@ For $2 USD a month, you can get a custom subdomain (yourname.posted.pics). If in
 - [Cloudinary account](https://console.cloudinary.com/invites/lpov9zyyucivvxsnalc5/s4khtwourlx3jw2fz5xp?t=default) (you can Login using GitHub) *This is an affiliate link so I can get more credits if you sign up.
 
 # Steps
-- [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify/netlify-statuskit)
+- [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/conshus/posting-pictures)
 
 - To be able to log into the photo gallery's admin dashboard, you'll need to enable the GitHub provider in the Netlify dashboard. Go to "Site settings" -> "Registration" and scroll to "External providers". Select "GitHub" under "Add provider".
 
