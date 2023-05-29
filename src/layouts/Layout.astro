@@ -6,6 +6,7 @@
 
 let { photo, id } = Astro.props;
 let title = "Welcome to my photo gallery."
+let description = "Click to view more."
 const paths = ['at']
 
 
@@ -52,14 +53,14 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 		<meta name="description" content={photo ? photo.caption : ''}>
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content={title}>
-		<meta name="twitter:description" content={photo ? photo.caption : ''}>
+		<meta name="twitter:description" content={description}>
 		<meta name="twitter:image" content={photo ? photo.url : ''}>
 		<meta name="twitter:image:alt" content={photo ? photo.altText : ''}>
 		<meta property="og:image" content={photo ? photo.url : ''} />
 		<meta property="og:image:secure_url" content={photo ? photo.url : ''} />
 		<meta property="og:image:type" content="image/jpeg" />
 		<meta property="og:image:alt" content={photo ? photo.altText : ''} />
-		<meta property="og:description" content={photo ? photo.caption : ''} />
+		<meta property="og:description" content={description} />
 		<!-- <script src="../scripts/script.js"></script> -->
 		<title>{title}</title>
 	</head>
