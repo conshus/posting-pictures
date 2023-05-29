@@ -19,6 +19,7 @@
     let status = "";
     let url;
     let filename;
+    let postURL;
     $: allowSubmit = caption && altText && url;
     $: slug = name && name.toLowerCase().replaceAll(' ','-');
     $: photoTagsNoDuplicates = Array.from(new Set(photoTags));
@@ -62,6 +63,7 @@
         photoData.yearMonth = yearMonth;
 
         console.log("photoData: ", photoData);
+        console.log("url: ",`${$siteURL}/at/${photoData.slug}/${photoData.filename}`)
         // dispatch('datetimechange', {
         //     datetimeMs: timeInMs
         // });
@@ -102,6 +104,18 @@
         status = "media uploaded successfully!"
     }
 
+    function clearForm() {
+        caption = "";
+        datetime = "";
+        altText = "";
+        altTextStatus = "";
+        name = "";
+        username = "";
+        withTags = [];
+        url = "";
+    }
+
+
     async function savePhoto(){
         console.log("photoData: ", photoData);
         console.log("photoTags: ", photoTagsNoDuplicates);  
@@ -109,6 +123,7 @@
         console.log("caption: ", caption); 
         console.log("alt: ", altText);
         console.log("url: ", url);
+        postURL = undefined;
 
         const newPicToAdd = {...photoData, altText, url, tags:photoTagsNoDuplicates, with:withMetadata, caption};
 
@@ -139,6 +154,10 @@
             console.log("updateEventResponse: ", updatelatestPicsResponse);
 
             // show Twitter link
+            postURL = `${$siteURL}/at/${photoData.slug}/${photoData.filename}`;
+
+            // clear form
+            clearForm();
 
 
         }catch(error) {
@@ -193,7 +212,6 @@
             {/each}
         </fieldset>
     
-        <div id="status">{status}</div>
         <br/><br/>
         <label for="url">URL:</label>
         <br/>
@@ -202,6 +220,12 @@
         <button on:click={() => uploadWidget.showUploadWidget()} disabled={!photoData} name="upload">Upload a photo</button>
         <br/><br/>
         <button on:click={savePhoto} disabled={!allowSubmit} name="save">Save Photo</button>
+        <br/>
+        <div id="status">{status}</div>
+        <br/><br/>
+        {#if postURL}
+            <a href={postURL} target="_blank">View posted photo</a> | <a href="https://twitter.com/intent/tweet?original_referer={postURL}&ref_src=site&text=Check%20out%20the%20photo%20I%20just%20posted&tw_p=tweetbutton&url={postURL}" target="_blank"><img src="https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/images/Twitter_logo_blue_16.png" alt="Twitter Logo">Share to Twitter</a>
+        {/if}
 
         <UploadWidget photoData={photoData} photoTags={photoTagsNoDuplicates}  withMetadata={withMetadata} caption={caption} alt={altText} bind:this={uploadWidget} on:success={handleCloudinarySuccess} />
         <!-- <button on:click={addEvent} disabled={!allowSubmit} name="add">Add</button>

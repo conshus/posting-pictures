@@ -222,7 +222,7 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 		width: auto;
 		max-width: 100%;
 		height: auto;
-		max-height: 98vh;
+		max-height: calc( 100vh - 75px - 50px );
 	}
 
 	/* should be same as above */
@@ -374,6 +374,10 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 		font-size: 40px;
 		text-decoration: none;
 	    color: black;
+	}
+
+	#photo {
+
 	}
 
 </style>

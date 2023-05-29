@@ -20,10 +20,9 @@ if (photoIndex === -1){
 
 <Layout photo={photos[photoIndex]} id={id}>
     <section id="photos-section" data-photo-id={id} data-photos={photosString}>
-        <!-- <h1 class='photo-header'><a href="/">{id}</a></h1> -->
         <div id="photo-container">
             <div id="prev-pic" class="navigation">
-                {photoIndex === 0 ? "": `<a href="${photos[photoIndex-1].filename}" class="navigation-link">&lArr;</a>`}
+                {photoIndex === 0 ? "": <a href={photos[photoIndex-1].filename} class="navigation-link">&lArr;</a>}
             </div>
             <div id="image-container" class="full-img">
                 <div id="photo-info">
@@ -35,7 +34,7 @@ if (photoIndex === -1){
                 <img id="photo" alt={photos[photoIndex].altText} src={photos[photoIndex].url}>      
             </div>
             <div id="next-pic" class="navigation">
-                {photoIndex === photos.length-1 ? "": `<a href=${photos[photoIndex+1].filename} class="navigation-link">&rArr;</a>`}
+                {photoIndex === photos.length-1 ? "": <a href={photos[photoIndex+1].filename} class="navigation-link">&rArr;</a>}
             </div>
     
         </div>
