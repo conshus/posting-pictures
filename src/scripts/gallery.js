@@ -111,9 +111,9 @@ export function galleryInit() {
         photoEls[1].animate(photoFadeDownLeft, photoTiming);
       }
       setTimeout(() => {
-        photoEls[1].innerHTML = `<a href="${photos[index + 1].id}"><img src=${
+        photoEls[1].innerHTML = `<a href="${photos[index + 1].filename}"><img src=${
           photos[index + 1].url
-        } alt=${photos[index + 1].alt} /></a>`;
+        } alt=${photos[index + 1].altText} /></a>`;
       }, duration / 2);
   
       if (amount === 1) {
@@ -123,9 +123,9 @@ export function galleryInit() {
       }
 
       setTimeout(() => {
-        photoEls[2].innerHTML = `<a href="${photos[index + 2].id}"><img src=${
+        photoEls[2].innerHTML = `<a href="${photos[index + 2].filename}"><img src=${
           photos[index + 2].url
-        } alt=${photos[index + 2].alt} /></a>`;
+        } alt=${photos[index + 2].altText} /></a>`;
       }, duration / 2);
   
       if (amount === 1) {
@@ -135,9 +135,9 @@ export function galleryInit() {
       }
 
       setTimeout(() => {
-        photoEls[3].innerHTML = `<a href="${photos[index + 3].id}"><img src=${
+        photoEls[3].innerHTML = `<a href="${photos[index + 3].filename}"><img src=${
           photos[index + 3].url
-        } alt=${photos[index + 3].alt} /></a>`;
+        } alt=${photos[index + 3].altText} /></a>`;
       }, duration / 2);
   
       if (amount === 1) {
@@ -147,9 +147,9 @@ export function galleryInit() {
       }
 
       setTimeout(() => {
-        photoEls[4].innerHTML = `<a href="${photos[index + 4].id}"><img src=${
+        photoEls[4].innerHTML = `<a href="${photos[index + 4].filename}"><img src=${
           photos[index + 4].url
-        } alt=${photos[index + 4].alt} /></a>`;
+        } alt=${photos[index + 4].altText} /></a>`;
       }, duration / 2);
     }
 
