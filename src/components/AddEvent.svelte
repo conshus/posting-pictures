@@ -1,5 +1,5 @@
 <script>
-    import { user, siteURL, settings, events, locations } from '../stores.js';
+    import { user, events, locations } from '../stores.js';
 
     let title;
     let locationName;
@@ -25,12 +25,10 @@
     $: allowSubmit = title && locationName && lat && lon && datetime && !slugDuplicate;
 
     async function getLocation() {
-        console.log("get Location", location);
         status = "getting coordinates..."
         if (locationName){
             const response = await fetch(`https://nominatim.openstreetmap.org/search.php?q=${locationName}&format=jsonv2`);
             const data = await response.json();
-            console.log("data: ", data);
             // just take the first entry
             lat = data[0].lat;
             lon = data[0].lon;
@@ -46,16 +44,13 @@
     }
     
     function findMyLocation() {
-        console.log("find my Location");
         if(!navigator.geolocation){
             status = "geolocation not supported!";
         } else {
             status = "getting location...";
             navigator.geolocation.getCurrentPosition(async (position) => {
-                console.log('got position: ', position);
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse.php?lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=9&format=jsonv2`);
                 const data = await response.json();
-                console.log("data: ", data);
                 locationName = data.display_name;
                 lat = data.lat;
                 lon = data.lon;
@@ -65,7 +60,7 @@
                 maxLon = data.boundingbox[3];
                 status= "got location data!";
             }, (error) => {
-                console.log('error getting location: ',error.message);
+                status = error.message;
             } )
         }
     }
@@ -92,20 +87,13 @@
         const timezoneString = `${sign}${
         Math.abs(timezoneHr) < 10 ? "0" + Math.abs(timezoneHr) : Math.abs(timezoneHr)
         }${timezoneMin === 0 ? "00" : Math.abs(timezoneMin)}`;
-        console.log("handleDateTimeChange: ", datetime)
-        console.log(`${datetime} GMT${timezoneString}`);
         const newDate = new Date(`${datetime}${timezoneString}`);
         timeInMs = Date.parse(newDate);
-        console.log({ timeInMs });
-        console.log(new Date(timeInMs).toLocaleString());
-        console.log("datetimeSplit: ", datetime.split('T')[0].split('-'));
         const datetimeSplit = datetime.split('T')[0].split('-')
-        console.log("yearMonth: ", `${datetimeSplit[0]}-${datetimeSplit[1]}`);
         yearMonth = `${datetimeSplit[0]}-${datetimeSplit[1]}`;
     }
 
     async function addEvent() {
-        console.log("add event");
         const eventToAdd = {
             title,
             slug,
@@ -136,24 +124,19 @@
         if(!duplicateLocation){
             // save to locations file
             $locations = [...$locations, locationToAdd];
-            console.log("not a duplicate: ", $locations);
             try {
                 const saveToLocationsResponse = await postData(`/.netlify/functions/save_to_locations`, $locations);
                 status = "locations saved successfully"
-                console.log("saveToLocationsResponse: ", saveToLocationsResponse);
             } catch (error) {
                 status = error;
             }
         }
-        console.log("$events: ", $events);
         try {
             status = "adding event";
             const addEventResponse = await postData(`/.netlify/functions/add_event`, eventToAdd.slug);
-            console.log("addEventResponse: ",addEventResponse);
             status = "saving to events list";
             const saveToEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
             status = "events saved successfully"
-            console.log("saveToEventsResponse: ", saveToEventsResponse);
             clearForm();
         } catch (error) {
             status = error;
@@ -184,11 +167,14 @@
         minLon = "";
         maxLat = "";
         maxLon = "";
-    }
-    
+        setTimeout(() => {
+            status = "";
+        }, 2000);
+    }    
 </script>
 
 <section>
+    <h1>Add Event</h1>
     <label for="event">Event:</label>
     <br/>        
     <input bind:value={title} id="title" required>
@@ -232,7 +218,6 @@
                 <button on:click={findMyLocation} name="find-location">Find My Location</button>
             {/if}
         </details>
-
     </fieldset>
 
     <br/><br/>
@@ -244,5 +229,11 @@
 <style>
     section {
         text-align: center;
+        max-width: 1000px;
+        margin: auto;
+    }
+    fieldset {
+        width: fit-content;
+        margin: auto;
     }
 </style>

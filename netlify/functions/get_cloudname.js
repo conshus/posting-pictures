@@ -1,11 +1,8 @@
 const { CLOUDINARY_NAME, NETLIFY_PAT, SITE_ID } = process.env;
 import fetch from 'node-fetch';
 
-
 exports.handler = async (event, context) => {
-
     const { identity, user } = context.clientContext;
-
     if (user){
         const userResponse = await fetch('https://api.netlify.com/api/v1/user',{
             method: 'get',
@@ -18,20 +15,8 @@ exports.handler = async (event, context) => {
         const userId = user.user_metadata.avatar_url.split('/u/')[1].split('?v=')[0];
         const dataId = data.avatar_url.split('/u/')[1].split('?v=')[0];
 
-        const siteResponse = await fetch(`https://api.netlify.com/api/v1/sites/${SITE_ID}`,{
-            method: 'get',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + NETLIFY_PAT
-            },
-        });
-        const siteData = await siteResponse.json();
-        const githubRepo = siteData.build_settings.repo_path.split(`${data.slug}/`)[1];
-
-
         if (user.app_metadata.provider === data.login_providers[0] && user.email === data.email && userId === dataId ){
             // Authorized
-
             return {
                 statusCode: 200,
                 headers: {
@@ -51,8 +36,7 @@ exports.handler = async (event, context) => {
                 },
                 body: JSON.stringify({verified: false}),
             };    
-        }
-    
+        }   
     } else {
         // Not authorized
         return {

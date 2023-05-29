@@ -1,5 +1,5 @@
 <script>
-    import { user, siteURL, settings, events, locations } from '../stores.js';
+    import { user, events, locations } from '../stores.js';
     let selectedEvent;
     let selectedEventIndex;
     let selectedLocation;
@@ -21,7 +21,6 @@
     }
 
     function handleEventSelectChange(e) {
-        console.log("handleEventSelectChange e: ", e.target.value);
         if (e.target.value){
             selectedEventIndex = e.target.value;
             selectedEvent = {...$events[selectedEventIndex]};
@@ -30,74 +29,59 @@
     }
 
     function handleDateTimeChange() {
-        console.log("handleDateTimeChange");
         const timezoneHr = Math.trunc(-(new Date().getTimezoneOffset() / 60));
         const sign = timezoneHr < 0 ? "-" : "+";
         const timezoneMin = new Date().getTimezoneOffset() % 60;
         const timezoneString = `${sign}${
         Math.abs(timezoneHr) < 10 ? "0" + Math.abs(timezoneHr) : Math.abs(timezoneHr)
         }${timezoneMin === 0 ? "00" : Math.abs(timezoneMin)}`;
-        console.log("handleDateTimeChange: ", datetime)
-        console.log(`${datetime} GMT${timezoneString}`);
         const newDate = new Date(`${datetime}${timezoneString}`);
         selectedEvent.timeInMs = Date.parse(newDate);
-        console.log(selectedEvent.timeInMs);
-        console.log(new Date(selectedEvent.timeInMs).toLocaleString());
-        console.log("datetimeSplit: ", datetime.split('T')[0].split('-'));
         const datetimeSplit = datetime.split('T')[0].split('-')
-        console.log("yearMonth: ", `${datetimeSplit[0]}-${datetimeSplit[1]}`);
         selectedEvent.yearMonth = `${datetimeSplit[0]}-${datetimeSplit[1]}`;
-        console.log("selectedEvent: ", selectedEvent);
-
     }
 
     function handleLocationSelectChange(){
-
         selectedEvent.locationName = selectedLocation.name;
         selectedEvent.locationSlug = selectedLocation.slug;
-
-        console.log("handleLocationSelectChange selectedEvent: ", selectedEvent);
-
     }
 
     async function updateEvent(){
-        console.log("update event");
         selectedEvent.group = selectedEvent.title.split('')[0].toUpperCase();
-        console.log("updateEvent selectedEvent: ", selectedEvent);
-        console.log("selectedEventIndex: ", selectedEventIndex);
-        console.log("$events[selectedEventIndex]: ",$events[selectedEventIndex]);
-        console.log("$events[selectedEventIndex] === selectedEvent: ",$events[selectedEventIndex] === selectedEvent);
         $events[selectedEventIndex] = selectedEvent;
         status = "saving to events list";
         try {
             const saveToEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
-            status = "events saved successfully"
-            console.log("saveToEventsResponse: ", saveToEventsResponse);
+            status = "events saved successfully";
+            setTimeout(() => {
+                status = "";
+            }, 2000);
+
         }catch(error){
-            console.error("error: ",error);
             status = error;
         }
     }
 
     async function removeEvent(){
         status = "removing event from list";
-        console.log("remove event: ", $events);
         $events.splice(selectedEventIndex,1);
         $events = $events;
         try {
             const removeEventsResponse = await postData(`/.netlify/functions/save_to_events`, $events);
             status = "event removed successfully";
-            console.log("removeEventsResponse: ", removeEventsResponse);
-            console.log("remove Event: ", $events);
             selectedEvent = undefined;
+            setTimeout(() => {
+                status = "";
+            }, 2000);
         }catch(error){
-            console.error("error: ",error);
             status = error;
         }
     }
 
 </script>
 <section>
+    <h1>Edit events</h1>
+
     {#if $events.length === 0}
         <div>No events yet. Please add one.</div>
     {:else}

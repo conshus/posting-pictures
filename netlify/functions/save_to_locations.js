@@ -29,7 +29,6 @@ exports.handler = async (event, context) => {
         const siteData = await siteResponse.json();
         const githubRepo = siteData.build_settings.repo_path.split(`${data.slug}/`)[1];
 
-
         if (user.app_metadata.provider === data.login_providers[0] && user.email === data.email && userId === dataId ){
             // Authorized
             const base64newSettings = Buffer.from(event.body).toString('base64');

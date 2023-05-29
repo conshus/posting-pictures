@@ -2,8 +2,6 @@
     import { user, siteURL, events, latestPics } from '../stores.js';
     import UploadWidget from './UploadWidget.svelte';
     let datetime;
-    let location;
-    let selectedEvent;
     let photoData;
     let timeInMs;
     let yearMonth;
@@ -47,36 +45,23 @@
         const timezoneString = `${sign}${
         Math.abs(timezoneHr) < 10 ? "0" + Math.abs(timezoneHr) : Math.abs(timezoneHr)
         }${timezoneMin === 0 ? "00" : Math.abs(timezoneMin)}`;
-        console.log("handleDateTimeChange: ", datetime)
-        // console.log("next_session_input: ",next_session_input);
-        console.log(`${datetime} GMT${timezoneString}`);
         const newDate = new Date(`${datetime}${timezoneString}`);
-        // console.log({ newDate });
         timeInMs = Date.parse(newDate);
-        console.log({ timeInMs });
         photoData.timeInMs = timeInMs;
-        console.log(new Date(timeInMs).toLocaleString());
-        console.log("datetimeSplit: ", datetime.split('T')[0].split('-'));
         const datetimeSplit = datetime.split('T')[0].split('-')
-        console.log("yearMonth: ", `${datetimeSplit[0]}-${datetimeSplit[1]}`);
         yearMonth = `${datetimeSplit[0]}-${datetimeSplit[1]}`;
         photoData.yearMonth = yearMonth;
-
-        console.log("photoData: ", photoData);
-        console.log("url: ",`${$siteURL}/at/${photoData.slug}/${photoData.filename}`)
-        // dispatch('datetimechange', {
-        //     datetimeMs: timeInMs
-        // });
     }
 
     function saveAltText(){
         altTextStatus = "";
-        console.log("saveAltText", altText);
         const commonWords = ["the","be","of","and","a","in","to","have","it","for","I","that","you","he","on","with","do","at","by","not","this","but","from","they","his","that","she","or","which","as","we","an","say","will","would","can","if","their","go","what","there","all","get","her","make","who","as","out","up","see","know","time","take","them","some","could","so","him","year","into","its","then","think","my","come","than","more","about","now","last","your","me","no","other","give","just","should","these","people","also","well","any","only","new","very","when","may","way","look","like","use","her","such","how","because","when","as","good","find","is"];
         const keywords = altText.replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase().split(" ").filter(word => !commonWords.includes(word));
         photoTags = [...photoTags, ...keywords];
-        console.log("saveAltText photoTags: ",photoTags); 
         altTextStatus = "Alt Text saved!";
+        setTimeout(() => {
+            altTextStatus = "";
+        }, 2000);
     }
 
     function addTag(){
@@ -89,13 +74,11 @@
             withMetadata = [...withMetadata, name, slug];
             photoTags = [...photoTags, name, slug];
         }
-        console.log("addTag photoTags: ",photoTags);
         name = "";
         username = ""; 
     }
 
     function handleCloudinarySuccess(event) {
-        console.log("success event.detail: ", event.detail);
         const uploadURL = event.detail.uploadURL;
         const uploadURLSplit = uploadURL.split('upload/');
         filename = event.detail.filename;
@@ -113,47 +96,38 @@
         username = "";
         withTags = [];
         url = "";
+        setTimeout(() => {
+            status = "";
+        }, 2000);
     }
 
 
     async function savePhoto(){
-        console.log("photoData: ", photoData);
-        console.log("photoTags: ", photoTagsNoDuplicates);  
-        console.log("withMetadata: ", withMetadata); 
-        console.log("caption: ", caption); 
-        console.log("alt: ", altText);
-        console.log("url: ", url);
         postURL = undefined;
-
         const newPicToAdd = {...photoData, altText, url, tags:photoTagsNoDuplicates, with:withMetadata, caption};
 
         try {
             // get the array of event photos from JSON file
             const getEventResponse = await fetch(`/.netlify/functions/get_event?slug=${photoData.slug}`);
             let eventPics = await getEventResponse.json();
-            console.log("eventPics: ", eventPics);
 
             // add new photo to array
             eventPics = [...eventPics, newPicToAdd];
-            console.log("eventPics: ", eventPics);
 
             // update the event JSON file
             const updateEventResponse = await postData(`/.netlify/functions/update_event?slug=${photoData.slug}`, eventPics);
             status = "event updated successfully"
-            console.log("updateEventResponse: ", updateEventResponse);
 
             // add to latest pics JSON
             if ($latestPics.length === 50){
-                console.log('latest pics is full.')
                 $latestPics.pop();
             }
             $latestPics = [ newPicToAdd, ...$latestPics ];
             status = "adding to latest pics"
             const updatelatestPicsResponse = await postData(`/.netlify/functions/update_latest_pics`, $latestPics);
             status = "pic added to latest successfully"
-            console.log("updateEventResponse: ", updatelatestPicsResponse);
 
-            // show Twitter link
+            // show page and Twitter link
             postURL = `${$siteURL}/at/${photoData.slug}/${photoData.filename}`;
 
             // clear form
@@ -161,13 +135,12 @@
 
 
         }catch(error) {
-            console.error('Error: ', error);
+            status = error;
         }
     }
-
-
 </script>
 <section>
+    <h1>Add photo</h1>
     {#if $events.length > 0}
         Select Event
         <br/>
@@ -227,27 +200,10 @@
             <a href={postURL} target="_blank">View posted photo</a> | <a href="https://twitter.com/intent/tweet?original_referer={postURL}&ref_src=site&text=Check%20out%20the%20photo%20I%20just%20posted&tw_p=tweetbutton&url={postURL}" target="_blank"><img src="https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/images/Twitter_logo_blue_16.png" alt="Twitter Logo">Share to Twitter</a>
         {/if}
 
-        <UploadWidget photoData={photoData} photoTags={photoTagsNoDuplicates}  withMetadata={withMetadata} caption={caption} alt={altText} bind:this={uploadWidget} on:success={handleCloudinarySuccess} />
-        <!-- <button on:click={addEvent} disabled={!allowSubmit} name="add">Add</button>
-        <button on:click={saveSettings} disabled={!allowSubmit} name="save">Save Settings</button>
-        <button on:click={getSettings} name="get">Get Settings</button> -->
-    
+        <UploadWidget photoData={photoData} photoTags={photoTagsNoDuplicates}  withMetadata={withMetadata} caption={caption} alt={altText} bind:this={uploadWidget} on:success={handleCloudinarySuccess} />    
     {:else}
         Please add an event
     {/if}
-    <!-- <br/><br/>
-    {#if photoData}
-        {photoData.location}
-    {:else}
-        select a location
-    {/if} -->
-    <!-- <br/><br/>
-    <label for="location">Location:</label>
-    <br/>                
-    <input bind:value={location} id="location" required>
-    <br/>
-    <button on:click={getLocation} name="get-location">Get Location</button><button on:click={findMyLocation} name="find-location">Find My Location</button> -->
-
 </section>
 
 <style>

@@ -27,18 +27,15 @@
 
 
     onMount(async () => {
-        console.log("onMount");
         try{
             cloudName = await postData(`/.netlify/functions/get_cloudname`);
-            console.log("cloudName: ", cloudName);
         }catch(error){
-            console.log("error getting cloudname: ", error);
+            console.error("error getting cloudname: ", error);
         }
 
     });
 
     export function showUploadWidget() {
-        console.log(" withMetadata: ",  withMetadata);
         cloudinary.openUploadWidget({
             cloudName,
             uploadPreset: "posting-pictures",
@@ -82,7 +79,6 @@
         },
         (err, result) => {
             if (!err) {    
-                console.log("Upload Widget event - ", result);
                 if (result.event === "success"){
                     dispatch('success',{
                         uploadURL: result.info.secure_url,

@@ -3,7 +3,6 @@ import fetch from 'node-fetch';
 import { Octokit } from "@octokit/core";
 const octokit = new Octokit({ auth: GITHUB_PAT });
 
-
 exports.handler = async (event, context) => {
 
     const { identity, user } = context.clientContext;

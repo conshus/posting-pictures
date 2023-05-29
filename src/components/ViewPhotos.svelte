@@ -1,5 +1,5 @@
 <script>
-    import { user, siteURL, settings, events } from '../stores.js';
+    import { user, events } from '../stores.js';
     let selectedEvent;
     let eventPhotos;
     let status = "";
@@ -21,7 +21,6 @@
 
 
     async function handleOnChange() {
-        console.log("selectedEvent: ", selectedEvent);
         if (selectedEvent){
             let getResponse;
             status = "loading photos...";
@@ -32,10 +31,9 @@
                     getResponse = await fetch(`/.netlify/functions/get_event?slug=${selectedEvent.slug}`);
                 }
                 eventPhotos = await getResponse.json();
-                console.log("eventPhotos: ", eventPhotos);
                 status = "";
             } catch(error){
-                console.error("Error getting photos: ", error);
+                status = error;
             }
         }
 
@@ -43,10 +41,8 @@
     async function removeEvent(e){
         let removePhotosResponse;
         status = "removing photo from event";
-        console.log("e: ", e.target.dataset.index);
         const tempEventPhotos = [...eventPhotos];
         tempEventPhotos.splice(e.target.dataset.index,1);
-        console.log("new eventPhotos: ", eventPhotos);
         try {
             isRemoving = true;
             if (selectedEvent === 'latest'){
@@ -62,17 +58,17 @@
             eventPhotos = tempEventPhotos;
         }catch(error){
             isRemoving = false;
-            console.error("error: ",error);
             status = error;
         }
     }
-
 </script>
+
 <div>
     <h1>View photos</h1>
     {#if $events}
         <section>
             <div>
+                <p>** Removing a photo does not delete it. It only removes it from the list and site.</p>
                 <select bind:value={selectedEvent} on:change="{handleOnChange}">
                     <option value="">select a gallery</option>
                     <option value="latest">latest photos</option>

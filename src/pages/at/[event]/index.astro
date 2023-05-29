@@ -1,11 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Gallery from '../../../components/Gallery.astro';
-import { dataset_dev } from 'svelte/internal';
 
 const { event } = Astro.params;
 let siteURL = Astro.url.origin;
-console.log("Astro.url: ", Astro.url);
 let photos;
 
 try {
@@ -21,13 +19,24 @@ try {
 ---
 <Layout photo={photos[photos.length-1]}>
 	<main>
-		<Gallery photos={photos}/>
+		{photos.length === 0 ? <div id="empty">no photos yet.</div> : <Gallery photos={photos}/>}
 	</main>
 </Layout>
 
 <style>
-    section {
-        max-width: 1000px;
-        margin: auto;
-    }
+	main {
+		margin: auto;
+		width: 100%;
+	    max-width: 1000px;
+		height: calc( 100vh - 75px - 50px );
+	}
+	#empty {
+		font-size: 3rem;
+		font-weight: 800;
+		margin: 0;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+	}
 </style>

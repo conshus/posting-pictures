@@ -1,14 +1,8 @@
 ---
-// export interface Props {
-// 	title: string;
-// 	// photo?: object;
-// }
-
 let { photo, id } = Astro.props;
 let title = "Welcome to my photo gallery."
 let description = "Click to view more."
 const paths = ['at']
-
 
 if (photo){
 	title = `${photo.title} photos.`;
@@ -24,22 +18,15 @@ if (id === "at"){
 if (id === "latest"){
 	title = "Welcome to my photo gallery."
 }
-// console.log("Astro.url: ",Astro.url);
-console.log("Astro.url.pathname: ",(Astro.url.pathname.split("/")));
-// console.log("set Astro.url.pathname: ",Array.from(new Set(Astro.url.pathname.split("/"))));
-
-// console.log("Astro.url.pathname.split('/',i): ",Astro.url.pathname.split("/",1))
 
 const pathElements = Array.from(new Set(Astro.url.pathname.split("/")));
 
 const innerPaths = Astro.url.pathname.substring(1);
-// console.log("innerPaths: ", innerPaths)
 
 const leftMenu = [...pathElements];
 leftMenu.pop();
 
 const rightMenu = paths.filter(path => !pathElements.includes(path));
-// console.log("rightMenu: ", rightMenu);
 ---
 
 <!DOCTYPE html>
@@ -61,7 +48,6 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 		<meta property="og:image:type" content="image/jpeg" />
 		<meta property="og:image:alt" content={photo ? photo.altText : ''} />
 		<meta property="og:description" content={description} />
-		<!-- <script src="../scripts/script.js"></script> -->
 		<title>{title}</title>
 	</head>
 	<body>
@@ -136,20 +122,12 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 		justify-content: space-between;
 	}
 
-	/* header menu {
-		justify-content: space-around;
-	} */
-
 	header a, footer a {
 		color: white;
 		margin: 0 10px;
 	}
 
 	menu {
-		/* width: 100%;
-		max-width: 1000px;
-		margin: auto; */
-		/* text-align: right; */
 		display: flex;
 		padding: 0;
 	    list-style-type: none;
@@ -187,14 +165,10 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 
 	main, section {
 	    margin: auto;
-		/* padding: 1.5rem; */
-		/* max-width: 60ch; */
 		width: 100%;
 		max-width: 1000px;
 		height: calc( 100vh - 75px - 50px);
-
 	}
-
 
 	#photo-container {
 		display: grid;
@@ -208,7 +182,6 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 	#image-container {
 		position: relative; 
 		view-transition-name: image-container;
-		/* background-color: red; */
 		width: auto;
 		max-width: 100%;
 		height: 100%;
@@ -241,11 +214,9 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 		margin: 5px;
 		padding: 10px 17px;
 		text-align: right;
-		/* border-radius: 100%; */
 		background-color: rgba(255,255,255,.8);
 		z-index: 10;
 	}
-
 
 	.photo-header {
 		view-transition-name: photo-header;
@@ -276,17 +247,6 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 		from { transform: translateX(-30px); }
 	}
 
-
-	/* .next-transition::view-transition-old(root) {
-		animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
-		300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
-	}
-
-	.next-transition::view-transition-new(root) {
-		animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
-		300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
-	} */
-
 	.next-transition::view-transition-old(image-container) {
 		animation-name: fade-out, slide-to-left;
 	}
@@ -313,13 +273,11 @@ const rightMenu = paths.filter(path => !pathElements.includes(path));
 
 
 	.gallery-to-details-page::view-transition-old(full-img) {
-		/* animation-name: fade-in, slide-from-left; */
 		animation-name: fade-out;
 		object-fit: contain;
 	}
 
 	.gallery-to-details-page::view-transition-new(full-img) {
-		/* animation-name: fade-in, slide-from-left; */
 		animation-name: fade-in;
 		object-fit: cover;
 	}

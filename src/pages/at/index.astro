@@ -16,7 +16,6 @@ function groupBy(objectArray, property) {
 
 try {
 	const response = await fetch(siteURL+"/.netlify/functions/get_events");
-	console.log("response: ", response);
 	const data = await response.json();
 	groupedEvents = groupBy(data, "group");
 	groupedKeys = Object.keys(groupedEvents).sort();

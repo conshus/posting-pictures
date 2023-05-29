@@ -8,17 +8,12 @@ exports.handler = async (event, context) => {
     const { identity, user } = context.clientContext;
     const eventSlug = event.queryStringParameters && event.queryStringParameters.slug
 
-    console.log("eventSlug: ", eventSlug);
     try {
         const userResponse = await fetch('https://api.netlify.com/api/v1/user',{
             method: 'get',
             headers: {
                 'Content-Type': 'application/json',
-                // "User-Agent": "MyApp (YOUR_NAME@EXAMPLE.COM)",
-                // 'Authorization': 'Bearer ' + "QX27v2jCdNZlAamPQaru1u0JjDF440uF-EgWUlnlBlA"
                 'Authorization': 'Bearer ' + NETLIFY_PAT
-                // 'Authorization': 'Bearer ' + "Zr20wX4I6jleYD61COTHLvZWdCfjFxQy8-NyVTnIFBk"
-            // 'Content-Type': 'application/x-www-form-urlencoded',
             },
         });
         const data = await userResponse.json();
@@ -43,7 +38,6 @@ exports.handler = async (event, context) => {
         });
     
         const eventContent = Buffer.from(originalFile.data.content, "base64").toString();
-        console.log("eventContent: ",eventContent);
     
         return {
             statusCode: 200,
@@ -65,9 +59,6 @@ exports.handler = async (event, context) => {
                 'Access-Control-Allow-Methods': '*', 
             },
             body: JSON.stringify({error}),
-        };    
-        
-    }
-
-    
+        };            
+    }    
 };

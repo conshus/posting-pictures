@@ -6,10 +6,8 @@ const { event, id } = Astro.params;
 let siteURL = Astro.url.origin;
 const response = await fetch(siteURL+`/.netlify/functions/get_event?slug=${event}`);
 const photos = await response.json();
-console.log("photos server: ", photos);
 const photosString = JSON.stringify(photos).replaceAll("'",'&#39;');
 const photoIndex = photos.findIndex((photo) => photo.filename == id);
-console.log("photoIndex server: ", photoIndex);
 if (photoIndex === -1){
     return Astro.redirect('./')
 }
@@ -37,16 +35,8 @@ if (photoIndex === -1){
         </div>
     </section>
 </Layout>
-    
-<script>
-    // import { detailsInit } from '../../../scripts/details.js';
-    // detailsInit();
-</script>
-    
+        
 <style is:inline is:global>
-    /* body {
-    margin: 0;
-    } */
     #photo-container {
         display: grid;
         place-items: center;
@@ -62,25 +52,16 @@ if (photoIndex === -1){
         justify-content: center;
         align-items: center; 
     }
-    /* #image-container img {
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 98vh;
-    } */
     #photo-info {
     position: absolute;
     right: 0;
     margin: 5px;
     padding: 10px 17px;
     text-align: right;
-    /* border-radius: 100%; */
     background-color: rgba(255,255,255,.8);
     }
     section {
         margin: auto;
-        /* padding: 1.5rem; */
-        /* max-width: 60ch; */
         width: 100%;
         max-width: 1000px;
     }

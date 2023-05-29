@@ -10,29 +10,23 @@
     $siteURL = siteOrigin;
 
     onMount(async () => {
-        console.log("onMount");
         user.lsCheck();
         if (netlifyIdentity.currentUser() && !loggedIn){
-            console.log("netlifyIdentity does have the user, but not logged in",netlifyIdentity.currentUser());
             user.register(netlifyIdentity.currentUser());
             loggedIn = true;
             authResponse = await checkUser();
             isAuth = authResponse.verified;
             if (isAuth){
                 // Get events
-                console.log("get events and locations", $siteURL);
                 try{
                     const eventsResponse = await fetch(`/.netlify/functions/get_events`);
                     $events = await eventsResponse.json();
-                    console.log("events: ", $events);
                     const locationsResponse = await fetch(`/.netlify/functions/get_locations`);
                     $locations = await locationsResponse.json();
-                    console.log("locations: ", $locations);
                     const latestPicsResponse = await fetch(`/.netlify/functions/get_latest_pics`);
                     $latestPics = await latestPicsResponse.json();
-                    console.log("latestPics: ", $latestPics);
                 }catch(error){
-                    console.log("error getting events and/or locations: ", error);
+                    console.error("error getting events and/or locations: ", error);
                 }
             }            
         }
@@ -43,13 +37,11 @@
             // Refresh the JWT
             try {
                 const response = await $user.jwt();
-                console.log("response: ", response);
             } catch(error) {
-                console.log("refresh error: ", error);
+                console.error("refresh error: ", error);
             }
             return;
         } else {
-            console.log("JWT is good");
             return;
         }
     }
@@ -72,28 +64,20 @@
     }
     // Bind to events
     netlifyIdentity.on("init", async(netlifyUser) => {
-        console.log("init: ", netlifyUser);
-        console.log("init $user: ", $user);
-        console.log("init netlifyIdentity.currentUser : ", netlifyIdentity.currentUser());
-        console.log("init ls user: ", JSON.parse(localStorage.getItem('gotrue.user')));
         if (netlifyUser) {
             user.register(netlifyUser);
-            console.log("got user on init.",$user);
             loggedIn = true;
             authResponse = await checkUser();
-            console.log("authResponse: ", authResponse);
             isAuth = authResponse.verified;
         } else {
-            console.log("user is not logged in");
+            console.error("user is not logged in");
         }
     });
     netlifyIdentity.on("login", async(netlifyUser) => {
         if (!loggedIn && !$user){
             user.register(netlifyUser);
-            console.log("user just logged in");
             loggedIn = true;
             authResponse = await checkUser();
-            console.log("authResponse: ", authResponse);
             isAuth = authResponse.verified;
         } else {
             console.log("user is already logged in.");
@@ -105,7 +89,6 @@
         loggedIn = false;
         isAuth = false;
         $settings = null;
-        console.log("Logged out");
     });
     netlifyIdentity.on("error", (err) => console.error("Logged out: ", err));
     netlifyIdentity.on("open", () => console.log("Widget opened"));
@@ -116,13 +99,11 @@
     }
 
     function logout(){
-        console.log("logout");
         netlifyIdentity.logout();
         user.logout();
         loggedIn = false;
         isAuth = false;
         $settings = {};
-        console.log("Logged out");
     }
 </script>
 

@@ -1,11 +1,9 @@
 ---
 const { photos } = Astro.props;
-console.log("needsslash: ", Astro.url.href[Astro.url.href.length-1]);
 let startingURL = Astro.url.href;
 if (Astro.url.href[Astro.url.href.length-1] !== '/'){
- startingURL = startingURL + '/';
+	startingURL = startingURL + '/';
 }
-
 ---
 
 <main>
@@ -60,14 +58,10 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
 		display: grid;
 		width: 100%;
 		height: 100%;
-		/* max-height: 90vh; */
-		/* max-width: 800px; */
-		/* place-items: center; */
 		grid-template-rows: 1fr 1fr 1fr 1fr;
 	    grid-template-columns: 1fr 1fr 1fr 1fr;
 	}
 	section:has(.photo-container) {
-		/* background-color: red; */
 		grid-template-areas:
     "one one one one"
     "one one one one"
@@ -75,7 +69,6 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
     "one one one one";
 	}
 	section:has(.photo-container + .photo-container) {
-		/* background-color: yellow; */
 		grid-template-areas:
     "two two one one"
     "two two one one"
@@ -84,7 +77,6 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
 
 	}
 	section:has(.photo-container + .photo-container + .photo-container) {
-		/* background-color: purple; */
 		grid-template-areas:
     "two two one one"
     "two two one one"
@@ -92,7 +84,6 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
     "three three one one";
 	}
 	section:has(.photo-container + .photo-container + .photo-container + .photo-container) {
-		/* background-color: black; */
 		grid-template-areas:
     "two two one one"
     "two two one one"
@@ -100,17 +91,12 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
     "three four one one";
 	}
 	section:has(.photo-container + .photo-container + .photo-container + .photo-container + .photo-container) {
-		/* background-color: blue; */
 		grid-template-areas:
     "two two one one"
     "two two one one"
     "three five one one"
     "three four one one";
 	}
-
-	/* div {
-		animation: 3s ease 0s normal forwards 1 fadein;
-	} */
 
 	.photo {
 		width: 100%;
@@ -122,37 +108,28 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
 
 	.photo-container:nth-child(1) {
 		grid-area: one;
-		/* background-color: red; */
 		animation: 3s ease 0s normal forwards 1 fadein;
-
 	}
 
 	.photo-container:nth-child(2) {
 		grid-area: two;
-		/* background-color: yellow; */
 		animation: 3s ease 1s normal forwards 1 fadein;
 	}
 
 	.photo-container:nth-child(3) {
 		grid-area: three;
-		/* background-color: purple; */
 		animation: 3s ease 2s normal forwards 1 fadein;
-
 	}
 
 	.photo-container:nth-child(4) {
 		grid-area: four;
-		/* background-color: black; */
 		animation: 3s ease 3s normal forwards 1 fadein;
-
 	}
 
 	.photo-container:nth-child(5) {
 		max-height:25vh;
 		grid-area: five;
-		/* background-color: blue; */
 		animation: 3s ease 4s normal forwards 1 fadein;
-
 	}
 
 	.photo-container.transition {
@@ -161,48 +138,38 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
 
 	.photo-container.transition:nth-child(1) {
 		grid-area: one;
-		/* background-color: red; */
 		animation: none;
 
 	}
 
 	.photo-container.transition:nth-child(2) {
 		grid-area: two;
-		/* background-color: yellow; */
 		animation: none;
 	}
 
 	.photo-container.transition:nth-child(3) {
 		grid-area: three;
-		/* background-color: purple; */
 		animation: none;
-
 	}
 
 	.photo-container.transition:nth-child(4) {
 		grid-area: four;
-		/* background-color: black; */
 		animation: none;
-
 	}
 
 	.photo-container.transition:nth-child(5) {
 		max-height:25vh;
 		grid-area: five;
-		/* background-color: blue; */
 		animation: none;
-
 	}
 
 	@keyframes fadein{
         0% { opacity:0; }
-        /* 66% { opacity:0; } */
         100% { opacity:1; }
     }
 
     @-webkit-keyframes fadein{
         0% { opacity:0; }
-        /* 66% { opacity:0; } */
         100% { opacity:1; }
     }
 
@@ -213,5 +180,4 @@ if (Astro.url.href[Astro.url.href.length-1] !== '/'){
         border-radius: 50%;
         font-size: 25px;
     }
-
 </style>

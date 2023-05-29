@@ -4,19 +4,12 @@ const { NETLIFY_PAT } = process.env;
 
 exports.handler = async function (event, context) {
     const { identity, user } = context.clientContext;
-    // const returnValue = user.email || "nothing";
-
-    console.log("user: ", user);
     if (user){
         const response = await fetch('https://api.netlify.com/api/v1/user',{
             method: 'get',
             headers: {
                 'Content-Type': 'application/json',
-                // "User-Agent": "MyApp (YOUR_NAME@EXAMPLE.COM)",
-                // 'Authorization': 'Bearer ' + "QX27v2jCdNZlAamPQaru1u0JjDF440uF-EgWUlnlBlA"
                 'Authorization': 'Bearer ' + NETLIFY_PAT
-                // 'Authorization': 'Bearer ' + "Zr20wX4I6jleYD61COTHLvZWdCfjFxQy8-NyVTnIFBk"
-            // 'Content-Type': 'application/x-www-form-urlencoded',
             },
         });
         const data = await response.json();
@@ -50,13 +43,13 @@ exports.handler = async function (event, context) {
     }
     // Do stuff and return a response...
     return {
-        statusCode: 200,
+        statusCode: 401,
         headers: {
             "Access-Control-Allow-Origin": "*", // Allow from anywhere 
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Methods': '*', 
         },
-        body: JSON.stringify({verified: false}),
+        body: JSON.stringify({status: 'Not Authorized!'}),
     };
 
 };
