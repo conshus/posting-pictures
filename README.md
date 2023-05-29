@@ -32,16 +32,8 @@ NETLIFY_PAT=
 
 - Open the same variable below to see how to get the value you will then input into the dashboard. Click "Save variable" Repeat until all Environment variables are filled in. 
 <details>
-    <summary>CLOUDINARY_API_KEY</summary>
-    Go to the <a href="https://console.cloudinary.com/console/" target="_blank">Console dashboard</a>
-</details>
-<details>
-    <summary>CLOUDINARY_API_SECRET</summary>
-    Something small enough to escape casual notice.
-</details>
-<details>
-    <summary>CLOUDINARY_NAME</summary>
-    Something small enough to escape casual notice.
+    <summary>CLOUDINARY_API_KEY | CLOUDINARY_API_SECRET | CLOUDINARY_NAME</summary>
+    Go to the <a href="https://console.cloudinary.com/console/" target="_blank">Console dashboard</a> The left side bar should look like this: <br/> <img src="https://github.com/conshus/posting-pictures/assets/212875/8c5b4146-1918-4a61-a550-fef4baa3ed88" alt="Cloudinary dashboard side bar show 'Dashboard' is highlighted" /><br/> On this page, you'll find the API key, API secret, and Cloud Name to put into the Netlify dashboard.<br/><img src="https://github.com/conshus/posting-pictures/assets/212875/1fb7358d-26fd-405c-91c9-fac1fb3e7608" alt="Cloudinary showing the Cloud Name, API Key, and API Secret" />
 </details>
 <details>
     <summary>GITHUB_PAT</summary>
