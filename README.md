@@ -12,6 +12,8 @@ For $2 USD a month, you can get a custom subdomain (yourname.posted.pics). If in
 # Steps
 - [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify/netlify-statuskit)
 
+- To be able to log into the photo gallery's admin dashboard, you'll need to enable the GitHub provider in the Netlify dashboard. Go to "Site settings" -> "Registration" and scroll to "External providers". Select "GitHub" under "Add provider".
+
 - In your Netlify dashboard, go to "Site settings" -> "Environment variables"
 
 - Click "Add a variable" and select "Import from a .env file"
@@ -37,11 +39,11 @@ NETLIFY_PAT=
 </details>
 <details>
     <summary>GITHUB_PAT</summary>
-    Something small enough to escape casual notice.
+    Here is a link to instructions on how to set up your GitHub Personal Access Token (classic): <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic" target="_blank">https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic</a> Note: If you set an expiration, you'll have to create another PAT.
 </details>
 <details>
     <summary>NETLIFY_PAT</summary>
-    Something small enough to escape casual notice.
+    Go to <a href="https://app.netlify.com/user/applications" target="_blank">https://app.netlify.com/user/applications</a> and scroll to "Personal access tokens". Click "New access token" give it a name and click "Generate token".
 </details>
 
 - Create a Cloudinary upload preset in the Console and then "Settings"(gear icon in the bottom left) -> "Upload" scroll to "Upload presets".
