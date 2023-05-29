@@ -61,9 +61,13 @@ Unique filename: on
 
 - In the Netlify dashboard, you should be able to click the link under "Settings for..." to view your photo gallery. I'll be empty.
 
+> If you get an error about `posts.map` or something, try to trigger a redeploy by going to "Deploys" in the left sidebar and then select "Deploy site" under "Trigger Deploy". I think it may have to do with the Environment keys being set when it was deployed intially. 🤷🏾‍♂
+
 - Put "/admin" at the end of your site's URL to go to the dashboard.
 
-- Click login and then "Continue with GitHub".
+- Click login and then "Continue with GitHub
+
+> If the screen stays on `authorizing` for a long time, you may need to add yourself as a User. Click "Site Settings" -> "Identity" -> "Registration". Under "Registration preferences", click "Edit settings". In the option "Invite only" description, click "Identity tab". There, register with the same email address used for your GitHub account.
 
 - That's it! Add events, photos and enjoy! Feel free to show me your photo gallery if you want.
 
