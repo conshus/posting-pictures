@@ -112,7 +112,7 @@ export function galleryInit() {
       }
       setTimeout(() => {
         photoEls[1].innerHTML = `<a href="${photos[index + 1].id}"><img src=${
-          photos[index + 1].src.large
+          photos[index + 1].url
         } alt=${photos[index + 1].alt} /></a>`;
       }, duration / 2);
   
@@ -124,7 +124,7 @@ export function galleryInit() {
 
       setTimeout(() => {
         photoEls[2].innerHTML = `<a href="${photos[index + 2].id}"><img src=${
-          photos[index + 2].src.large
+          photos[index + 2].url
         } alt=${photos[index + 2].alt} /></a>`;
       }, duration / 2);
   
@@ -136,7 +136,7 @@ export function galleryInit() {
 
       setTimeout(() => {
         photoEls[3].innerHTML = `<a href="${photos[index + 3].id}"><img src=${
-          photos[index + 3].src.large
+          photos[index + 3].url
         } alt=${photos[index + 3].alt} /></a>`;
       }, duration / 2);
   
@@ -148,7 +148,7 @@ export function galleryInit() {
 
       setTimeout(() => {
         photoEls[4].innerHTML = `<a href="${photos[index + 4].id}"><img src=${
-          photos[index + 4].src.large
+          photos[index + 4].url
         } alt=${photos[index + 4].alt} /></a>`;
       }, duration / 2);
     }
