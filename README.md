@@ -12,7 +12,7 @@ For $2 USD a month, you can get a custom subdomain (yourname.posted.pics). If in
 # Steps
 - [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify/netlify-statuskit)
 
-- In your Netlify dashboard, go to Site settings -> Environment variables
+- In your Netlify dashboard, go to "Site settings" -> "Environment variables"
 
 - Click "Add a variable" and select "Import from a .env file"
 
@@ -33,7 +33,7 @@ NETLIFY_PAT=
 - Open the same variable below to see how to get the value you will then input into the dashboard. Click "Save variable" Repeat until all Environment variables are filled in. 
 <details>
     <summary>CLOUDINARY_API_KEY</summary>
-    Something small enough to escape casual notice.
+    Go to the <a href="https://console.cloudinary.com/console/" target="_blank">Console dashboard</a>
 </details>
 <details>
     <summary>CLOUDINARY_API_SECRET</summary>
@@ -52,23 +52,42 @@ NETLIFY_PAT=
     Something small enough to escape casual notice.
 </details>
 
-- Create a
+- Create a Cloudinary upload preset in the Console and then "Settings"(gear icon in the bottom left) -> "Upload" scroll to "Upload presets".
 
+- Click "Add upload preset"
+
+- Fill out the following:
+<pre>
+Upload preset name -> posting-pictures
+Signing Mode -> Unsigned
+Use filename or externally defined Public ID: on
+Unique filename: on
+</pre>
+(You can take a look at the other options and select what fits your needs.)
+
+- In the Netlify dashboard, you should be able to click the link under "Settings for..." to view your photo gallery. I'll be empty.
+
+- Put "/admin" at the end of your site's URL to go to the dashboard.
+
+- Click login and then "Continue with GitHub".
+
+- That's it! Add events, photos and enjoy! Feel free to show me your photo gallery if you want.
+
+
+# Upcoming features
+
+Things I want to add once I get some time:
+
+- Integrate the View Transitions API
+- Show events on a map
+- Show photos based on keywords, time, people, things, etc
 
 
 # Astro Stuff if you want to modify things
 
-```
-npm create astro@latest -- --template basics
-```
+Built the photo gallery with Astro using HTML, CSS and JavaScript. Don't need to be an expert to make some customations.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
+The Admin dashboard is built with Svelte. Astro also supports Lit, Vue, React, Preact, SolidJS, and [more](https://astro.build/integrations?search=&categories%5B%5D=frameworks). Feel free to rewrite anything with whatever you are comfortable with. 
 
 
 ## 🚀 Project Structure
