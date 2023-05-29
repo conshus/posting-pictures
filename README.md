@@ -12,7 +12,7 @@ For $2 USD a month, you can get a custom subdomain (yourname.posted.pics). If in
 # Steps
 - [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/conshus/posting-pictures)
 
-- To be able to log into the photo gallery's admin dashboard, you'll need to enable the GitHub provider in the Netlify dashboard. Go to "Site settings" -> "Registration" and scroll to "External providers". Select "GitHub" under "Add provider".
+- To be able to log into the photo gallery's admin dashboard, you'll need to enable the GitHub provider in the Netlify dashboard. Go to "Site settings" -> "Identity", enable and then "Registration" and scroll to "External providers". Select "GitHub" under "Add provider".
 
 - In your Netlify dashboard, go to "Site settings" -> "Environment variables"
 
