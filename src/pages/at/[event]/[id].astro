@@ -14,8 +14,6 @@ if (photoIndex === -1){
     return Astro.redirect('./')
 }
 
-console.log("photos[photoIndex-1].filename: ", photos[photoIndex-1].filename);
-
 ---
 
 <Layout photo={photos[photoIndex]} id={id}>

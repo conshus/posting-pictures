@@ -10,16 +10,20 @@ function groupBy(objectArray, property) {
   return objectArray.reduce((acc, obj) => {
     const key = obj[property];
     const curGroup = acc[key] ?? [];
-
     return { ...acc, [key]: [...curGroup, obj] };
   }, {});
 }
 
-const response = await fetch(siteURL+"/.netlify/functions/get_events")
-const data = await response.json();
-groupedEvents = groupBy(data, "group");
-groupedKeys = Object.keys(groupedEvents).sort();
-groupedValues = Object.values(groupedEvents).sort();
+try {
+	const response = await fetch(siteURL+"/.netlify/functions/get_events");
+	console.log("response: ", response);
+	const data = await response.json();
+	groupedEvents = groupBy(data, "group");
+	groupedKeys = Object.keys(groupedEvents).sort();
+	groupedValues = Object.values(groupedEvents).sort();
+} catch (error){
+	return Astro.redirect('./')
+}
 
 // Based on MDN demo:https://developer.mozilla.org/en-US/docs/Web/CSS/position#sticky_positioning
 ---

@@ -13,7 +13,7 @@ const photosString = JSON.stringify(photos).replaceAll("'",'&#39;');
 const photoIndex = photos.findIndex((photo) => photo.filename == id);
 console.log("photoIndex server: ", photoIndex);
 if (photoIndex === -1){
-    return Astro.redirect('./')
+    return Astro.redirect('./');
 }
 
 ---

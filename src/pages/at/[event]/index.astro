@@ -1,14 +1,22 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Gallery from '../../../components/Gallery.astro';
+import { dataset_dev } from 'svelte/internal';
 
 const { event } = Astro.params;
 let siteURL = Astro.url.origin;
 console.log("Astro.url: ", Astro.url);
+let photos;
 
-const response = await fetch(siteURL+"/.netlify/functions/get_event?slug="+event);
-const photos = await response.json();
-console.log("data: ", photos);
+try {
+    const response = await fetch(siteURL+"/.netlify/functions/get_event?slug="+event);
+    photos = await response.json();
+    if(photos.error.status && photos.error.status === 404){
+        return Astro.redirect('./');
+    }
+} catch(error){
+    console.error("Error getting event info: ", error);
+}
 
 ---
 <Layout photo={photos[photos.length-1]}>

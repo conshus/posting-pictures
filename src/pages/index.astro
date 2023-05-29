@@ -4,10 +4,15 @@ import Layout from '../layouts/Layout.astro';
 import Gallery from '../components/Gallery.astro';
 
 let siteURL = Astro.url.origin;
+let photos;
 
-const response = await fetch(siteURL+"/.netlify/functions/get_latest_pics");
-const photos = await response.json();
-console.log("photos: ", photos);
+try{
+	const response = await fetch(siteURL+"/.netlify/functions/get_latest_pics");
+	photos = await response.json();
+	console.log("photos: ", photos);
+}catch (error){
+	console.error("Error getting latest pics: ", error);
+}
 
 ---
 
