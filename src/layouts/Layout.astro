@@ -1,27 +1,44 @@
 ---
-export interface Props {
-	title: string;
-}
+// export interface Props {
+// 	title: string;
+// 	// photo?: object;
+// }
 
-const { title } = Astro.props;
+let { photo, id } = Astro.props;
+let title = "Welcome to my photo gallery."
 const paths = ['at']
 
-console.log("Astro.url: ",Astro.url);
-console.log("Astro.url.pathname: ",(Astro.url.pathname.split("/")));
-console.log("set Astro.url.pathname: ",Array.from(new Set(Astro.url.pathname.split("/"))));
 
-console.log("Astro.url.pathname.split('/',i): ",Astro.url.pathname.split("/",1))
+if (photo){
+	title = `${photo.title} photos.`;
+	if (id){
+		title = `${photo.caption}`;
+	}
+}
+
+if (id === "at"){
+	title = "Events I've been to."
+}
+
+if (id === "latest"){
+	title = "Welcome to my photo gallery."
+}
+// console.log("Astro.url: ",Astro.url);
+console.log("Astro.url.pathname: ",(Astro.url.pathname.split("/")));
+// console.log("set Astro.url.pathname: ",Array.from(new Set(Astro.url.pathname.split("/"))));
+
+// console.log("Astro.url.pathname.split('/',i): ",Astro.url.pathname.split("/",1))
 
 const pathElements = Array.from(new Set(Astro.url.pathname.split("/")));
 
 const innerPaths = Astro.url.pathname.substring(1);
-console.log("innerPaths: ", innerPaths)
+// console.log("innerPaths: ", innerPaths)
 
 const leftMenu = [...pathElements];
 leftMenu.pop();
 
 const rightMenu = paths.filter(path => !pathElements.includes(path));
-console.log("rightMenu: ", rightMenu);
+// console.log("rightMenu: ", rightMenu);
 ---
 
 <!DOCTYPE html>
@@ -32,11 +49,23 @@ console.log("rightMenu: ", rightMenu);
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={photo ? photo.caption : ''}>
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content={title}>
+		<meta name="twitter:description" content={photo ? photo.caption : ''}>
+		<meta name="twitter:image" content={photo ? photo.url : ''}>
+		<meta name="twitter:image:alt" content={photo ? photo.altText : ''}>
+		<meta property="og:image" content={photo ? photo.url : ''} />
+		<meta property="og:image:secure_url" content={photo ? photo.url : ''} />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:alt" content={photo ? photo.altText : ''} />
+		<meta property="og:description" content={photo ? photo.caption : ''} />
+		<script src="../scripts/script.js"></script>
 		<title>{title}</title>
 	</head>
 	<body>
 		<header>
-			<section>
+			<div class="layout-section">
 				<menu>
 					{leftMenu.map((path, i) => (
 						<li><a class="url-path" href={Astro.url.origin+"/"+innerPaths.split("/",i).join("/")}>/{path}</a></li>
@@ -47,15 +76,15 @@ console.log("rightMenu: ", rightMenu);
 						<li><a href={path}>/{path}</a></li>
 					))}
 				</menu>
-			</section>
+			</div>
 		</header>
 		<slot />
 		<footer>
-			<section>
+			<div class="layout-section">
 				<menu>
 					<li><a href="https://Posted.Pics" target="_blank">Posted.Pics</a></li>
 				</menu>
-			</section>
+			</div>
 		</footer>
 	</body>
 </html>
@@ -81,7 +110,7 @@ console.log("rightMenu: ", rightMenu);
 			Bitstream Vera Sans Mono, Courier New, monospace;
 	}
 
-	section {
+	.layout-section {
 		display: flex;
 		align-items: center;
 		width: 100%;
@@ -102,7 +131,7 @@ console.log("rightMenu: ", rightMenu);
 		z-index: 50;
 	}
 
-	header section {
+	header div {
 		justify-content: space-between;
 	}
 
@@ -137,7 +166,7 @@ console.log("rightMenu: ", rightMenu);
 		font-weight: bolder;
 	}
 
-	footer section {
+	footer div {
 		justify-content: end;
 	}
 
@@ -154,4 +183,196 @@ console.log("rightMenu: ", rightMenu);
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+
+	main, section {
+	    margin: auto;
+		/* padding: 1.5rem; */
+		/* max-width: 60ch; */
+		width: 100%;
+		max-width: 1000px;
+		height: calc( 100vh - 75px - 50px);
+
+	}
+
+
+	#photo-container {
+		display: grid;
+		place-items: center;
+		grid-template-columns: 50px 1fr 50px;
+		height: 100%;
+	}
+	.navigation {
+		text-align: center
+	}
+	#image-container {
+		position: relative; 
+		view-transition-name: image-container;
+		/* background-color: red; */
+		width: auto;
+		max-width: 100%;
+		height: 100%;
+		max-height: 98vh;
+		display: grid;
+		place-content: center;
+		place-items: center;
+	}
+
+	#image-container img {
+		width: auto;
+		max-width: 100%;
+		height: auto;
+		max-height: 98vh;
+	}
+
+	/* should be same as above */
+	.full-img img {
+		view-transition-name: full-img;
+		contain: paint;
+	}
+
+	.transition img {
+		contain: paint;
+	}
+
+	#photo-info {
+		position: absolute;
+		right: 0;
+		margin: 5px;
+		padding: 10px 17px;
+		text-align: right;
+		/* border-radius: 100%; */
+		background-color: rgba(255,255,255,.8);
+		z-index: 10;
+	}
+
+
+	.photo-header {
+		view-transition-name: photo-header;
+		contain: paint;
+	}
+
+	@keyframes fade-in {
+		from { opacity: 0; }
+	}
+
+	@keyframes fade-out {
+		to { opacity: 0; }
+	}
+
+	@keyframes slide-from-right {
+		from { transform: translateX(30px); }
+	}
+
+	@keyframes slide-to-left {
+		to { transform: translateX(-30px); }
+	}
+
+	@keyframes slide-to-right {
+		to { transform: translateX(30px); }
+	}
+
+	@keyframes slide-from-left {
+		from { transform: translateX(-30px); }
+	}
+
+
+	/* .next-transition::view-transition-old(root) {
+		animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+		300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+	}
+
+	.next-transition::view-transition-new(root) {
+		animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+		300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+	} */
+
+	.next-transition::view-transition-old(image-container) {
+		animation-name: fade-out, slide-to-left;
+	}
+
+	.next-transition::view-transition-new(image-container) {
+		animation-name: fade-in, slide-from-right;
+	}
+
+	.prev-transition::view-transition-old(image-container) {
+		animation-name: fade-out, slide-to-right;
+	}
+
+	.prev-transition::view-transition-new(image-container) {
+		animation-name: fade-in, slide-from-left;
+	}
+
+	::view-transition-old(full-img),
+	::view-transition-new(full-img) {
+		animation: none;
+		mix-blend-mode: normal;
+		height: 100%;
+		overflow: clip;
+	}
+
+
+	.gallery-to-details-page::view-transition-old(full-img) {
+		/* animation-name: fade-in, slide-from-left; */
+		animation-name: fade-out;
+		object-fit: contain;
+	}
+
+	.gallery-to-details-page::view-transition-new(full-img) {
+		/* animation-name: fade-in, slide-from-left; */
+		animation-name: fade-in;
+		object-fit: cover;
+	}
+
+	.details-to-gallery-page::view-transition-old(full-img) {
+		object-fit: cover;
+	}
+
+	.details-to-gallery-page::view-transition-new(full-img) {
+		object-fit: contain;
+	}
+
+
+	/* at styling */
+	dl {
+		max-width: 1000px;
+		margin: auto;
+	}
+
+	dl > div {
+		background: #fff;
+		padding: 24px 0 0 0;
+	}
+
+	dt {
+		background: #000000;
+		border-bottom: 1px solid #989ea4;
+		border-top: 1px solid #717d85;
+		color: #fff;
+		font: bold 18px/21px Helvetica, Arial, sans-serif;
+		margin: 0;
+		padding: 2px 0 0 12px;
+		position: -webkit-sticky;
+		position: sticky;
+		top: 75px;
+	}
+
+	dd {
+		font: bold 20px/45px Helvetica, Arial, sans-serif;
+		margin: 0;
+		padding: 0 0 0 12px;
+		white-space: nowrap;
+	}
+
+	dd + dd {
+		border-top: 1px solid #ccc;
+	}
+
+	.navigation-link {
+		border: 2px black solid;
+		border-radius: 50%;
+		font-size: 40px;
+		text-decoration: none;
+	    color: black;
+	}
+
 </style>

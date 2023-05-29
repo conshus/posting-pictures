@@ -1,19 +1,24 @@
 ---
 const { photos } = Astro.props;
+console.log("needsslash: ", Astro.url.href[Astro.url.href.length-1]);
+let startingURL = Astro.url.href;
+if (Astro.url.href[Astro.url.href.length-1] !== '/'){
+ startingURL = startingURL + '/';
+}
 
 ---
 
 <main>
 	<div class="navigation">
-		{photos.length > 5 ? <button id="prev">previous</button> : "" }
+		{photos.length > 5 ? <button id="prev">&lArr;</button> : "" }
 	</div>
 	<section id="photos-section" data-photos={JSON.stringify(photos)}>
 		{photos.map((photo, index) =>(
-			index < 5 ? <div class="photo-container"><div class="photo"><a href={photo.filename}><img src={photo.url} alt={photo.altText} /></a></div></div> : ""
+			index < 5 ? <div class="photo-container"><div class="photo"><a href={startingURL + photo.filename}><img src={photo.url} alt={photo.altText} /></a></div></div> : ""
 		))}
 	</section>
 	<div class="navigation">
-		{photos.length > 5 ? <button id="next">next</button> : "" }
+		{photos.length > 5 ? <button id="next">&rArr;</button> : "" }
 	</div>
 </main>
 
@@ -54,8 +59,8 @@ const { photos } = Astro.props;
 		/* background-color: green; */
 		display: grid;
 		width: 100%;
-		height: 90vh;
-		max-height: 90vh;
+		height: 100%;
+		/* max-height: 90vh; */
 		/* max-width: 800px; */
 		/* place-items: center; */
 		grid-template-rows: 1fr 1fr 1fr 1fr;
@@ -190,15 +195,23 @@ const { photos } = Astro.props;
 	}
 
 	@keyframes fadein{
-    0% { opacity:0; }
-    /* 66% { opacity:0; } */
-    100% { opacity:1; }
-}
+        0% { opacity:0; }
+        /* 66% { opacity:0; } */
+        100% { opacity:1; }
+    }
 
-@-webkit-keyframes fadein{
-    0% { opacity:0; }
-    /* 66% { opacity:0; } */
-    100% { opacity:1; }
-}
+    @-webkit-keyframes fadein{
+        0% { opacity:0; }
+        /* 66% { opacity:0; } */
+        100% { opacity:1; }
+    }
+
+    button {
+        cursor: pointer;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        font-size: 25px;
+    }
 
 </style>
