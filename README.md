@@ -10,9 +10,16 @@ For $2 USD a month, you can get a custom subdomain (yourname.posted.pics). If in
 - [Cloudinary account](https://console.cloudinary.com/invites/lpov9zyyucivvxsnalc5/s4khtwourlx3jw2fz5xp?t=default) (you can Login using GitHub) *This is an affiliate link so I can get more credits if you sign up.
 
 # Steps
+
+### Deploy the site
+
 - [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/conshus/posting-pictures)
 
+### Set up Log in with GitHub
+
 - To be able to log into the photo gallery's admin dashboard, you'll need to enable the GitHub provider in the Netlify dashboard. Go to "Site settings" -> "Identity", enable and then "Registration" and scroll to "External providers". Select "GitHub" under "Add provider".
+
+### Get Environment Variables
 
 - In your Netlify dashboard, go to "Site settings" -> "Environment variables"
 
@@ -46,6 +53,8 @@ NETLIFY_PAT=
     Go to <a href="https://app.netlify.com/user/applications" target="_blank">https://app.netlify.com/user/applications</a> and scroll to "Personal access tokens". Click "New access token" give it a name and click "Generate token".
 </details>
 
+### Set up Cloudinary upload preset
+
 - Create a Cloudinary upload preset in the Console and then "Settings"(gear icon in the bottom left) -> "Upload" scroll to "Upload presets".
 
 - Click "Add upload preset"
@@ -59,6 +68,8 @@ Unique filename: on
 </pre>
 (You can take a look at the other options and select what fits your needs.)
 
+### View your photo gallery and admin dashboard
+
 - In the Netlify dashboard, you should be able to click the link under "Settings for..." to view your photo gallery. I'll be empty.
 
 > If you get an error about `posts.map` or something, try to trigger a redeploy by going to "Deploys" in the left sidebar and then select "Deploy site" under "Trigger Deploy". I think it may have to do with the Environment keys being set when it was deployed intially. 🤷🏾‍♂
@@ -68,6 +79,8 @@ Unique filename: on
 - Click login and then "Continue with GitHub
 
 > If the screen stays on `authorizing` for a long time, you may need to add yourself as a User. Click "Site Settings" -> "Identity" -> "Registration". Under "Registration preferences", click "Edit settings". In the option "Invite only" description, click "Identity tab". There, register with the same email address used for your GitHub account.
+
+### Congrats!!!
 
 - That's it! Add events, photos and enjoy! Feel free to show me your photo gallery if you want.
 
